@@ -1,0 +1,2395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OER Utilization Questionnaire - Open University of Tanzania</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .serif {
+            font-family: 'Merriweather', serif;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .question-card {
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+        .question-card:hover {
+            border-left-color: #667eea;
+            transform: translateX(5px);
+        }
+        .option-hover {
+            transition: all 0.2s ease;
+        }
+        .option-hover:hover {
+            background-color: #f3f4f6;
+            transform: translateX(5px);
+        }
+        .progress-bar {
+            transition: width 0.5s ease;
+        }
+        .section-hidden {
+            display: none;
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .checkbox-custom:checked + div {
+            background-color: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+        .radio-custom:checked + div {
+            background-color: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+        .likert-scale input:checked + label {
+            background-color: #667eea;
+            color: white;
+            transform: scale(1.05);
+        }
+        .sticky-nav {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            backdrop-filter: blur(10px);
+        }
+        .conditional-box {
+            background-color: #fef3c7;
+            border-left: 4px solid #f59e0b;
+        }
+        .specify-input {
+            transition: all 0.3s ease;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
+        .specify-input.active {
+            max-height: 200px;
+            opacity: 1;
+            margin-top: 0.5rem;
+        }
+        .specify-field {
+            border: 2px solid #e5e7eb;
+            border-radius: 0.5rem;
+            padding: 0.5rem;
+            width: 100%;
+            transition: all 0.2s;
+        }
+        .specify-field:focus {
+            border-color: #667eea;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        .specify-container {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            border: 2px dashed #3b82f6;
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+            margin-top: 0.5rem;
+        }
+        .q11-specify-container {
+            background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);
+            border: 2px solid #f97316;
+            border-radius: 0.75rem;
+            padding: 1rem;
+            margin-top: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(249, 115, 22, 0.1);
+        }
+        .q11-specify-field {
+            border: 2px solid #fdba74;
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+            width: 100%;
+            background: white;
+            font-size: 0.875rem;
+            transition: all 0.2s;
+        }
+        .q11-specify-field:focus {
+            border-color: #f97316;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.2);
+        }
+        .q11-specify-label {
+            color: #c2410c;
+            font-weight: 600;
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        @media print {
+            body {
+                background: white;
+            }
+            .sticky-nav, .no-print {
+                display: none !important;
+            }
+            .glass-panel {
+                box-shadow: none;
+                border: 1px solid #ccc;
+                break-inside: avoid;
+            }
+            .question-card {
+                break-inside: avoid;
+            }
+        }
+        .error-field {
+            border-color: #ef4444 !important;
+            background-color: #fef2f2 !important;
+        }
+        .error-message {
+            color: #dc2626;
+            font-size: 0.75rem;
+            margin-top: 0.25rem;
+            display: none;
+        }
+        .error-message.show {
+            display: block;
+        }
+        .loading {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+        .spinner {
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .already-submitted {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border: 2px solid #f59e0b;
+        }
+    </style>
+<base target="_blank">
+</head>
+<body class="pb-20">
+
+    <!-- Progress Header -->
+    <div class="sticky-nav bg-white/95 border-b border-gray-200 shadow-sm">
+        <div class="max-w-6xl mx-auto px-4 py-3">
+            <div class="flex justify-between items-center mb-2">
+                <span class="text-sm font-semibold text-gray-600">Questionnaire Progress</span>
+                <span class="text-sm font-bold text-indigo-600" id="progress-text">0% Complete</span>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                <div class="bg-indigo-600 h-2.5 rounded-full progress-bar" id="progress-bar" style="width: 0%"></div>
+            </div>
+            <div class="flex justify-between mt-2 text-xs text-gray-500 overflow-x-auto space-x-2">
+                <button onclick="scrollToSection('intro')" class="hover:text-indigo-600 whitespace-nowrap px-2 py-1 rounded hover:bg-gray-100">Intro</button>
+                <button onclick="scrollToSection('section-a')" class="hover:text-indigo-600 whitespace-nowrap px-2 py-1 rounded hover:bg-gray-100">A: Demographics</button>
+                <button onclick="scrollToSection('section-b')" class="hover:text-indigo-600 whitespace-nowrap px-2 py-1 rounded hover:bg-gray-100">B: Awareness</button>
+                <button onclick="scrollToSection('section-c')" class="hover:text-indigo-600 whitespace-nowrap px-2 py-1 rounded hover:bg-gray-100">C: Utilization</button>
+                <button onclick="scrollToSection('section-d')" class="hover:text-indigo-600 whitespace-nowrap px-2 py-1 rounded hover:bg-gray-100">D: Attitudes</button>
+                <button onclick="scrollToSection('section-e')" class="hover:text-indigo-600 whitespace-nowrap px-2 py-1 rounded hover:bg-gray-100">E: Challenges</button>
+                <button onclick="scrollToSection('section-f')" class="hover:text-indigo-600 whitespace-nowrap px-2 py-1 rounded hover:bg-gray-100">F: Recommendations</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-5xl mx-auto px-4 py-6">
+        
+        <!-- Already Submitted Warning -->
+        <div id="already-submitted-warning" class="hidden glass-panel rounded-2xl shadow-xl p-6 mb-6 already-submitted text-center">
+            <i class="fas fa-exclamation-triangle text-4xl text-amber-600 mb-3"></i>
+            <h2 class="text-xl font-bold text-amber-800 mb-2">Questionnaire Already Submitted</h2>
+            <p class="text-amber-700 mb-4">You have already completed this questionnaire. Each participant is allowed to submit only once.</p>
+            <div class="bg-white rounded-lg p-4 mb-4 max-w-md mx-auto">
+                <p class="text-sm text-gray-600 mb-1">Your Reference ID:</p>
+                <p id="submitted-ref-id" class="font-mono text-lg font-bold text-indigo-600"></p>
+                <p class="text-xs text-gray-500 mt-2">Submitted on: <span id="submitted-date"></span></p>
+            </div>
+            <button onclick="resetSubmission()" class="px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-all text-sm">
+                <i class="fas fa-redo mr-2"></i>Submit New Response (Admin Only)
+            </button>
+        </div>
+
+        <!-- Header -->
+        <div class="glass-panel rounded-2xl shadow-2xl p-6 mb-6 text-center" id="intro">
+            <div class="inline-block p-3 rounded-full bg-indigo-100 mb-4">
+                <i class="fas fa-graduation-cap text-3xl text-indigo-600"></i>
+            </div>
+            <h1 class="serif text-2xl md:text-4xl font-bold text-gray-800 mb-2">
+                QUESTIONNAIRE
+            </h1>
+            <p class="text-base text-gray-600 mb-2 font-semibold">Open University of Tanzania</p>
+            <div class="w-20 h-1 bg-indigo-600 mx-auto mb-4"></div>
+            <h2 class="text-lg md:text-xl font-bold text-gray-800 mb-4 leading-relaxed px-4">
+                Utilization of Open Educational Resources (OER) to Support Teaching and Learning for Undergraduate Distance Students
+            </h2>
+            <div class="bg-indigo-50 rounded-lg p-3 text-sm text-indigo-800">
+                <i class="fas fa-user-graduate mr-2"></i> To be administered to Students
+            </div>
+            <div class="mt-4 flex justify-center gap-2 no-print">
+                <button onclick="window.print()" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm text-gray-700 transition-all">
+                    <i class="fas fa-print mr-2"></i>Print
+                </button>
+                <button onclick="exportDraft()" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm text-gray-700 transition-all">
+                    <i class="fas fa-download mr-2"></i>Save Draft
+                </button>
+                <button onclick="loadDraft()" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm text-gray-700 transition-all">
+                    <i class="fas fa-upload mr-2"></i>Load Draft
+                </button>
+            </div>
+        </div>
+
+        <!-- Introduction Letter -->
+        <div class="glass-panel rounded-2xl shadow-xl p-6 mb-6 fade-in">
+            <h3 class="text-lg font-bold text-gray-800 mb-3 flex items-center">
+                <i class="fas fa-envelope-open-text text-indigo-600 mr-2"></i>
+                Dear Participant,
+            </h3>
+            <div class="prose text-gray-700 leading-relaxed space-y-3 text-sm">
+                <p>
+                    You are invited to participate in this research study titled <strong>"Utilization of Open Educational Resources (OER) to Support Teaching and Learning for Distance Students at the Open University of Tanzania."</strong>
+                </p>
+                <p>
+                    The purpose of the study is to investigate how Open Educational Resources (OER) are accessed, used, and perceived by distance students at the Open University of Tanzania. The research specifically aims to:
+                </p>
+                <ul class="list-disc list-inside ml-4 space-y-1 text-gray-600">
+                    <li>Assess your awareness of OER</li>
+                    <li>Determine the extent of OER utilization</li>
+                    <li>Explore your attitudes towards OER</li>
+                    <li>Identify challenges faced</li>
+                    <li>Seek your suggestions for improving OER-based teaching and learning</li>
+                </ul>
+                <div class="bg-blue-50 border-l-4 border-blue-500 p-3 my-3 rounded-r">
+                    <p class="font-semibold text-blue-800 mb-1 text-sm">Important Information:</p>
+                    <ul class="list-disc list-inside space-y-1 text-blue-700 text-xs">
+                        <li>Participation is entirely <strong>voluntary</strong></li>
+                        <li>You may skip any question or withdraw at any time without penalty</li>
+                        <li>All responses remain <strong>strictly confidential</strong></li>
+                        <li>Data used solely for academic purposes</li>
+                        <li>Your identity will not be revealed in any reports</li>
+                        <li><strong>One submission per participant</strong></li>
+                    </ul>
+                </div>
+                <p class="font-semibold text-gray-800 text-sm">
+                    Your honest and thoughtful responses are highly valued and will contribute significantly to enhancing distance education practices at the Open University of Tanzania and beyond.
+                </p>
+                <p class="text-xs text-gray-600 italic">
+                    If you have any questions, please contact the researcher or the university's ethics committee.
+                </p>
+            </div>
+            <div class="mt-4 pt-4 border-t border-gray-200">
+                <label class="flex items-start space-x-3 cursor-pointer">
+                    <input type="checkbox" id="consent-check" class="w-5 h-5 text-indigo-600 rounded focus:ring-indigo-500 mt-0.5" onchange="checkConsent()">
+                    <span class="text-gray-800 font-medium text-sm">I have read the above information and agree to participate in this study</span>
+                </label>
+                <p id="consent-error" class="error-message">You must agree to participate before proceeding.</p>
+            </div>
+        </div>
+
+        <form id="questionnaire-form"
+              action="https://api.staticforms.dev/submit"
+              method="POST"
+              onsubmit="return handleStaticFormsSubmit(event)">
+
+            <!-- StaticForms Configuration -->
+            <!-- IMPORTANT: Ensure msagatinn@gmail.com is set as the delivery email in your StaticForms dashboard -->
+            <input type="hidden" name="accessKey" value="sf_lchhdgdln4ej51fbcmie5h2c">
+            <input type="hidden" name="subject" value="OER Questionnaire Response - OUT Student Survey">
+            <input type="hidden" name="redirectTo" value="https://msagatinn-gif.github.io/Student-Questionnaire/thankyou.html">
+            
+            <!-- Honeypot field for spam protection -->
+            <input type="text" name="honeypot" style="display: none;">
+            
+            <!-- Unique submission ID -->
+            <input type="hidden" name="submission_id" id="submission-id">
+            <input type="hidden" name="submission_timestamp" id="submission-timestamp">
+
+            <!-- SECTION A: DEMOGRAPHIC INFORMATION -->
+            <div class="glass-panel rounded-2xl shadow-xl p-6 mb-6 section-hidden" id="section-a">
+                <div class="flex items-center mb-4 pb-3 border-b-2 border-indigo-100">
+                    <div class="w-10 h-10 rounded-full bg-indigo-600 text-white flex items-center justify-center text-lg font-bold mr-3">A</div>
+                    <div>
+                        <h2 class="text-xl font-bold text-gray-800">DEMOGRAPHIC INFORMATION</h2>
+                        <p class="text-gray-600 text-xs">Please tick/fill as appropriate</p>
+                    </div>
+                </div>
+
+                <!-- Q1: Gender -->
+                <div class="question-card bg-white rounded-lg p-4 mb-4 shadow-sm border border-gray-100" data-required="true">
+                    <h3 class="font-semibold text-gray-800 mb-3 flex items-center text-sm">
+                        <span class="bg-indigo-100 text-indigo-700 rounded-full w-6 h-6 flex items-center justify-center text-xs mr-2">1</span>
+                        Gender <span class="text-red-500 ml-1">*</span>
+                    </h3>
+                    <div class="grid grid-cols-2 gap-3">
+                        <label class="cursor-pointer option-hover p-3 rounded-lg border-2 border-gray-200 transition-all">
+                            <input type="radio" name="gender" value="Male" class="hidden radio-custom" onchange="updateProgress(); clearError(this)">
+                            <div class="flex items-center justify-center">
+                                <i class="fas fa-mars text-blue-500 mr-2"></i>
+                                <span class="font-medium text-sm">Male</span>
+                            </div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-3 rounded-lg border-2 border-gray-200 transition-all">
+                            <input type="radio" name="gender" value="Female" class="hidden radio-custom" onchange="updateProgress(); clearError(this)">
+                            <div class="flex items-center justify-center">
+                                <i class="fas fa-venus text-pink-500 mr-2"></i>
+                                <span class="font-medium text-sm">Female</span>
+                            </div>
+                        </label>
+                    </div>
+                    <p class="error-message" id="gender-error">Please select your gender.</p>
+                </div>
+
+                <!-- Q2: Age -->
+                <div class="question-card bg-white rounded-lg p-4 mb-4 shadow-sm border border-gray-100" data-required="true">
+                    <h3 class="font-semibold text-gray-800 mb-3 flex items-center text-sm">
+                        <span class="bg-indigo-100 text-indigo-700 rounded-full w-6 h-6 flex items-center justify-center text-xs mr-2">2</span>
+                        Age <span class="text-red-500 ml-1">*</span>
+                    </h3>
+                    <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
+                        <label class="cursor-pointer option-hover p-2 rounded-lg border-2 border-gray-200 transition-all text-sm">
+                            <input type="radio" name="age" value="Less than 20 years" class="hidden radio-custom" onchange="updateProgress(); clearError(this)">
+                            <div class="text-center"><span>&lt; 20 years</span></div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-2 rounded-lg border-2 border-gray-200 transition-all text-sm">
+                            <input type="radio" name="age" value="21-30 years" class="hidden radio-custom" onchange="updateProgress(); clearError(this)">
+                            <div class="text-center"><span>21-30 years</span></div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-2 rounded-lg border-2 border-gray-200 transition-all text-sm">
+                            <input type="radio" name="age" value="31-40 years" class="hidden radio-custom" onchange="updateProgress(); clearError(this)">
+                            <div class="text-center"><span>31-40 years</span></div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-2 rounded-lg border-2 border-gray-200 transition-all text-sm">
+                            <input type="radio" name="age" value="41-50 years" class="hidden radio-custom" onchange="updateProgress(); clearError(this)">
+                            <div class="text-center"><span>41-50 years</span></div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-2 rounded-lg border-2 border-gray-200 transition-all text-sm">
+                            <input type="radio" name="age" value="51-60 years" class="hidden radio-custom" onchange="updateProgress(); clearError(this)">
+                            <div class="text-center"><span>51-60 years</span></div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-2 rounded-lg border-2 border-gray-200 transition-all text-sm">
+                            <input type="radio" name="age" value="61 years and above" class="hidden radio-custom" onchange="updateProgress(); clearError(this)">
+                            <div class="text-center"><span>61+ years</span></div>
+                        </label>
+                    </div>
+                    <p class="error-message" id="age-error">Please select your age group.</p>
+                </div>
+
+                <!-- Q3: Student Category -->
+                <div class="question-card bg-white rounded-lg p-4 mb-4 shadow-sm border border-gray-100" data-required="true">
+                    <h3 class="font-semibold text-gray-800 mb-3 flex items-center text-sm">
+                        <span class="bg-indigo-100 text-indigo-700 rounded-full w-6 h-6 flex items-center justify-center text-xs mr-2">3</span>
+                        Which category of student do you belong to? <span class="text-red-500 ml-1">*</span>
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
+                        <label class="cursor-pointer option-hover p-2 rounded-lg border-2 border-gray-200 transition-all">
+                            <input type="radio" name="student_category" value="First Year Student (Bachelor)" class="hidden radio-custom" onchange="updateProgress(); toggleSpecifyField('category-specify-container', false); clearError(this)">
+                            <div>First Year Student (Bachelor)</div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-2 rounded-lg border-2 border-gray-200 transition-all">
+                            <input type="radio" name="student_category" value="Second Year Student (Bachelor)" class="hidden radio-custom" onchange="updateProgress(); toggleSpecifyField('category-specify-container', false); clearError(this)">
+                            <div>Second Year Student (Bachelor)</div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-2 rounded-lg border-2 border-gray-200 transition-all">
+                            <input type="radio" name="student_category" value="Third Year Student (Bachelor)" class="hidden radio-custom" onchange="updateProgress(); toggleSpecifyField('category-specify-container', false); clearError(this)">
+                            <div>Third Year Student (Bachelor)</div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-2 rounded-lg border-2 border-gray-200 transition-all">
+                            <input type="radio" name="student_category" value="First Year Student (Diploma)" class="hidden radio-custom" onchange="updateProgress(); toggleSpecifyField('category-specify-container', false); clearError(this)">
+                            <div>First Year Student (Diploma)</div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-2 rounded-lg border-2 border-gray-200 transition-all">
+                            <input type="radio" name="student_category" value="Second Year Student (Diploma)" class="hidden radio-custom" onchange="updateProgress(); toggleSpecifyField('category-specify-container', false); clearError(this)">
+                            <div>Second Year Student (Diploma)</div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-2 rounded-lg border-2 border-gray-200 transition-all">
+                            <input type="radio" name="student_category" value="First Year Student (Certificate)" class="hidden radio-custom" onchange="updateProgress(); toggleSpecifyField('category-specify-container', false); clearError(this)">
+                            <div>First Year Student (Certificate)</div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-2 rounded-lg border-2 border-gray-200 transition-all">
+                            <input type="radio" name="student_category" value="Post-graduate Student (First Year)" class="hidden radio-custom" onchange="updateProgress(); toggleSpecifyField('category-specify-container', false); clearError(this)">
+                            <div>Post-graduate Student (First Year)</div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-2 rounded-lg border-2 border-gray-200 transition-all">
+                            <input type="radio" name="student_category" value="Post-graduate Student (Second Year)" class="hidden radio-custom" onchange="updateProgress(); toggleSpecifyField('category-specify-container', false); clearError(this)">
+                            <div>Post-graduate Student (Second Year)</div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-2 rounded-lg border-2 border-gray-200 transition-all md:col-span-2">
+                            <input type="radio" name="student_category" value="Others" class="hidden radio-custom" onchange="updateProgress(); toggleSpecifyField('category-specify-container', true); clearError(this)">
+                            <div class="flex items-center">
+                                <i class="fas fa-edit text-indigo-500 mr-2"></i>
+                                <span>Others (Please specify below)</span>
+                            </div>
+                        </label>
+                    </div>
+                    <div id="category-specify-container" class="specify-input">
+                        <div class="specify-container">
+                            <label class="block text-xs font-semibold text-blue-800 mb-1">Please specify your student category:</label>
+                            <input type="text" name="student_category_specify" class="specify-field text-sm" placeholder="Enter your specific category..." oninput="updateProgress()">
+                        </div>
+                    </div>
+                    <p class="error-message" id="student_category-error">Please select your student category.</p>
+                </div>
+
+                <!-- Q4: Regional Centre -->
+                <div class="question-card bg-white rounded-lg p-4 mb-4 shadow-sm border border-gray-100" data-required="true">
+                    <h3 class="font-semibold text-gray-800 mb-3 flex items-center text-sm">
+                        <span class="bg-indigo-100 text-indigo-700 rounded-full w-6 h-6 flex items-center justify-center text-xs mr-2">4</span>
+                        Please indicate your Regional Centre affiliation <span class="text-red-500 ml-1">*</span>
+                    </h3>
+                    <div class="space-y-2 text-sm">
+                        <label class="cursor-pointer option-hover p-3 rounded-lg border-2 border-gray-200 transition-all block">
+                            <input type="radio" name="regional_centre" value="Kinondoni Regional Centre" class="hidden radio-custom" onchange="updateProgress(); toggleSpecifyField('centre-specify-container', false); clearError(this)">
+                            <div>Kinondoni Regional Centre</div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-3 rounded-lg border-2 border-gray-200 transition-all block">
+                            <input type="radio" name="regional_centre" value="Ilala Regional Centre" class="hidden radio-custom" onchange="updateProgress(); toggleSpecifyField('centre-specify-container', false); clearError(this)">
+                            <div>Ilala Regional Centre</div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-3 rounded-lg border-2 border-gray-200 transition-all block">
+                            <input type="radio" name="regional_centre" value="Others" class="hidden radio-custom" onchange="updateProgress(); toggleSpecifyField('centre-specify-container', true); clearError(this)">
+                            <div class="flex items-center">
+                                <i class="fas fa-map-marker-alt text-indigo-500 mr-2"></i>
+                                <span>Other Regional Centre (Please specify below)</span>
+                            </div>
+                        </label>
+                    </div>
+                    <div id="centre-specify-container" class="specify-input">
+                        <div class="specify-container">
+                            <label class="block text-xs font-semibold text-blue-800 mb-1">Please specify your regional centre:</label>
+                            <input type="text" name="regional_centre_specify" class="specify-field text-sm" placeholder="Enter your regional centre name..." oninput="updateProgress()">
+                        </div>
+                    </div>
+                    <p class="error-message" id="regional_centre-error">Please select your regional centre.</p>
+                </div>
+
+                <!-- Q5: Faculty Affiliation -->
+                <div class="question-card bg-white rounded-lg p-4 mb-4 shadow-sm border border-gray-100" data-required="true">
+                    <h3 class="font-semibold text-gray-800 mb-3 flex items-center text-sm">
+                        <span class="bg-indigo-100 text-indigo-700 rounded-full w-6 h-6 flex items-center justify-center text-xs mr-2">5</span>
+                        What is your faculty affiliation? <span class="text-red-500 ml-1">*</span>
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
+                        <label class="cursor-pointer option-hover p-3 rounded-lg border-2 border-gray-200 transition-all">
+                            <input type="radio" name="faculty_affiliation" value="Faculty of Science" class="hidden radio-custom" onchange="updateProgress(); clearError(this)">
+                            <div class="flex items-center">
+                                <i class="fas fa-flask text-blue-500 mr-2"></i>
+                                <span>Faculty of Science</span>
+                            </div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-3 rounded-lg border-2 border-gray-200 transition-all">
+                            <input type="radio" name="faculty_affiliation" value="Faculty of Business Management" class="hidden radio-custom" onchange="updateProgress(); clearError(this)">
+                            <div class="flex items-center">
+                                <i class="fas fa-briefcase text-green-500 mr-2"></i>
+                                <span>Faculty of Business Management</span>
+                            </div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-3 rounded-lg border-2 border-gray-200 transition-all">
+                            <input type="radio" name="faculty_affiliation" value="Faculty of Arts and Social Sciences" class="hidden radio-custom" onchange="updateProgress(); clearError(this)">
+                            <div class="flex items-center">
+                                <i class="fas fa-book text-purple-500 mr-2"></i>
+                                <span>Faculty of Arts and Social Sciences</span>
+                            </div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-3 rounded-lg border-2 border-gray-200 transition-all">
+                            <input type="radio" name="faculty_affiliation" value="Faculty of Education" class="hidden radio-custom" onchange="updateProgress(); clearError(this)">
+                            <div class="flex items-center">
+                                <i class="fas fa-chalkboard-teacher text-orange-500 mr-2"></i>
+                                <span>Faculty of Education</span>
+                            </div>
+                        </label>
+                    </div>
+                    <p class="error-message" id="faculty_affiliation-error">Please select your faculty.</p>
+                </div>
+
+                <!-- Q6: Degree Programme -->
+                <div class="question-card bg-white rounded-lg p-4 mb-4 shadow-sm border border-gray-100" data-required="true">
+                    <h3 class="font-semibold text-gray-800 mb-3 flex items-center text-sm">
+                        <span class="bg-indigo-100 text-indigo-700 rounded-full w-6 h-6 flex items-center justify-center text-xs mr-2">6</span>
+                        Indicate your degree programme <span class="text-red-500 ml-1">*</span>
+                    </h3>
+                    <div class="bg-gray-50 p-3 rounded-lg border-2 border-dashed border-gray-300">
+                        <input type="text" name="degree_programme" class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-indigo-500 focus:outline-none text-sm bg-white" placeholder="Type your degree programme here..." oninput="updateProgress(); clearError(this)" required>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-2 italic">
+                        <i class="fas fa-info-circle mr-1"></i> Please specify the name of your degree programme (e.g., Bachelor of Science in Computer Science, Diploma in Business Administration, etc.)
+                    </p>
+                    <p class="error-message" id="degree_programme-error">Please enter your degree programme.</p>
+                </div>
+            </div>
+
+            <!-- SECTION B: AWARENESS OF OER -->
+            <div class="glass-panel rounded-2xl shadow-xl p-6 mb-6 section-hidden" id="section-b">
+                <div class="flex items-center mb-4 pb-3 border-b-2 border-indigo-100">
+                    <div class="w-10 h-10 rounded-full bg-indigo-600 text-white flex items-center justify-center text-lg font-bold mr-3">B</div>
+                    <div>
+                        <h2 class="text-xl font-bold text-gray-800">AWARENESS OF OER</h2>
+                        <p class="text-gray-600 text-xs">Open Educational Resources knowledge assessment</p>
+                    </div>
+                </div>
+
+                <!-- Q7: OER Awareness Level -->
+                <div class="question-card bg-white rounded-lg p-4 mb-4 shadow-sm border border-gray-100">
+                    <h3 class="font-semibold text-gray-800 mb-3 flex items-center text-sm">
+                        <span class="bg-indigo-100 text-indigo-700 rounded-full w-6 h-6 flex items-center justify-center text-xs mr-2">7</span>
+                        How aware are you of Open Educational Resources (OER)?
+                    </h3>
+                    <div class="space-y-2 text-sm">
+                        <label class="cursor-pointer option-hover p-3 rounded-lg border-2 border-gray-200 transition-all block">
+                            <input type="radio" name="oer_awareness" value="Not aware" class="hidden radio-custom" onchange="updateProgress(); toggleConditionalQuestions()">
+                            <div class="flex items-start">
+                                <span class="font-medium block">I am not aware of OER</span>
+                            </div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-3 rounded-lg border-2 border-gray-200 transition-all block">
+                            <input type="radio" name="oer_awareness" value="Heard only" class="hidden radio-custom" onchange="updateProgress(); toggleConditionalQuestions()">
+                            <div class="flex items-start">
+                                <span class="font-medium block">I have heard of OER, but don't know much about them</span>
+                            </div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-3 rounded-lg border-2 border-gray-200 transition-all block">
+                            <input type="radio" name="oer_awareness" value="Somewhat aware" class="hidden radio-custom" onchange="updateProgress(); toggleConditionalQuestions()">
+                            <div class="flex items-start">
+                                <span class="font-medium block">I am somewhat aware of OER but I am not sure how they can be used</span>
+                            </div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-3 rounded-lg border-2 border-gray-200 transition-all block">
+                            <input type="radio" name="oer_awareness" value="Aware" class="hidden radio-custom" onchange="updateProgress(); toggleConditionalQuestions()">
+                            <div class="flex items-start">
+                                <span class="font-medium block">I am aware of OER and some of their use cases</span>
+                            </div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-3 rounded-lg border-2 border-gray-200 transition-all block">
+                            <input type="radio" name="oer_awareness" value="Very aware" class="hidden radio-custom" onchange="updateProgress(); toggleConditionalQuestions()">
+                            <div class="flex items-start">
+                                <span class="font-medium block">I am very aware of OER and know how they can be used in the classroom</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Q8: How Learned About OER (Conditional) -->
+                <div class="question-card bg-white rounded-lg p-4 mb-4 shadow-sm border border-gray-100 conditional-box" id="q8-container" style="display:none;">
+                    <h3 class="font-semibold text-gray-800 mb-3 flex items-center text-sm">
+                        <span class="bg-indigo-100 text-indigo-700 rounded-full w-6 h-6 flex items-center justify-center text-xs mr-2">8</span>
+                        If your answer to Question 7 is "Aware" or "Very Aware," how did you learn about the existence of Open Educational Resources?
+                        <span class="ml-2 text-xs bg-yellow-200 text-yellow-800 px-2 py-0.5 rounded">Conditional</span>
+                    </h3>
+                    <div class="grid grid-cols-2 gap-2 text-xs">
+                        <label class="cursor-pointer option-hover p-2 rounded-lg border-2 border-gray-200 transition-all bg-white">
+                            <input type="checkbox" name="learned_oer" value="Brochure" class="hidden checkbox-custom" onchange="updateProgress()">
+                            <div>Brochure</div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-2 rounded-lg border-2 border-gray-200 transition-all bg-white">
+                            <input type="checkbox" name="learned_oer" value="Colleagues" class="hidden checkbox-custom" onchange="updateProgress()">
+                            <div>Colleagues</div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-2 rounded-lg border-2 border-gray-200 transition-all bg-white">
+                            <input type="checkbox" name="learned_oer" value="Librarians" class="hidden checkbox-custom" onchange="updateProgress()">
+                            <div>Librarians</div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-2 rounded-lg border-2 border-gray-200 transition-all bg-white">
+                            <input type="checkbox" name="learned_oer" value="Tutor" class="hidden checkbox-custom" onchange="updateProgress()">
+                            <div>Tutor</div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-2 rounded-lg border-2 border-gray-200 transition-all bg-white">
+                            <input type="checkbox" name="learned_oer" value="Self-Learn" class="hidden checkbox-custom" onchange="updateProgress()">
+                            <div>Self-Learn</div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-2 rounded-lg border-2 border-gray-200 transition-all bg-white">
+                            <input type="checkbox" name="learned_oer" value="Orientation Sessions" class="hidden checkbox-custom" onchange="updateProgress()">
+                            <div>Orientation Sessions</div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-2 rounded-lg border-2 border-gray-200 transition-all bg-white">
+                            <input type="checkbox" name="learned_oer" value="OUT Library Website" class="hidden checkbox-custom" onchange="updateProgress()">
+                            <div>OUT Library Website</div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-2 rounded-lg border-2 border-gray-200 transition-all bg-white">
+                            <input type="checkbox" name="learned_oer" value="OER Repositories" class="hidden checkbox-custom" onchange="updateProgress()">
+                            <div>OER Repositories (Eg. MERLOT)</div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-2 rounded-lg border-2 border-gray-200 transition-all md:col-span-2 bg-white">
+                            <input type="checkbox" name="learned_oer" value="Others" class="hidden checkbox-custom" onchange="toggleSpecifyCheckbox(this, 'learned-specify-container')">
+                            <div class="flex items-center">
+                                <i class="fas fa-plus-circle text-indigo-500 mr-2"></i>
+                                <span>Others (Please specify below)</span>
+                            </div>
+                        </label>
+                    </div>
+                    <div id="learned-specify-container" class="specify-input">
+                        <div class="specify-container">
+                            <label class="block text-xs font-semibold text-blue-800 mb-1">Please specify how you learned about OER:</label>
+                            <input type="text" name="learned_oer_specify" class="specify-field text-sm" placeholder="Enter other sources..." oninput="updateProgress()">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Q9: Concepts Awareness (Matrix) -->
+                <div class="question-card bg-white rounded-lg p-4 mb-4 shadow-sm border border-gray-100">
+                    <h3 class="font-semibold text-gray-800 mb-3 flex items-center text-sm">
+                        <span class="bg-indigo-100 text-indigo-700 rounded-full w-6 h-6 flex items-center justify-center text-xs mr-2">9</span>
+                        How aware are you of the following concepts? (Tick where appropriate)
+                    </h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-xs border-collapse">
+                            <thead>
+                                <tr class="bg-gray-50">
+                                    <th class="p-2 text-left border border-gray-200 font-semibold">Concept</th>
+                                    <th class="p-2 text-center border border-gray-200 w-16">Unaware</th>
+                                    <th class="p-2 text-center border border-gray-200 w-16">Somewhat Aware</th>
+                                    <th class="p-2 text-center border border-gray-200 w-16">Aware</th>
+                                    <th class="p-2 text-center border border-gray-200 w-16">Very Aware</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="p-2 border border-gray-200 font-medium">Open License (Eg. Creative Commons Licenses)</td>
+                                    <td class="p-2 border border-gray-200 text-center"><input type="radio" name="awareness_license" value="Unaware" class="w-4 h-4 text-indigo-600" onchange="updateProgress()"></td>
+                                    <td class="p-2 border border-gray-200 text-center"><input type="radio" name="awareness_license" value="Somewhat Aware" class="w-4 h-4 text-indigo-600" onchange="updateProgress()"></td>
+                                    <td class="p-2 border border-gray-200 text-center"><input type="radio" name="awareness_license" value="Aware" class="w-4 h-4 text-indigo-600" onchange="updateProgress()"></td>
+                                    <td class="p-2 border border-gray-200 text-center"><input type="radio" name="awareness_license" value="Very Aware" class="w-4 h-4 text-indigo-600" onchange="updateProgress()"></td>
+                                </tr>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="p-2 border border-gray-200 font-medium">Copyright</td>
+                                    <td class="p-2 border border-gray-200 text-center"><input type="radio" name="awareness_copyright" value="Unaware" class="w-4 h-4 text-indigo-600" onchange="updateProgress()"></td>
+                                    <td class="p-2 border border-gray-200 text-center"><input type="radio" name="awareness_copyright" value="Somewhat Aware" class="w-4 h-4 text-indigo-600" onchange="updateProgress()"></td>
+                                    <td class="p-2 border border-gray-200 text-center"><input type="radio" name="awareness_copyright" value="Aware" class="w-4 h-4 text-indigo-600" onchange="updateProgress()"></td>
+                                    <td class="p-2 border border-gray-200 text-center"><input type="radio" name="awareness_copyright" value="Very Aware" class="w-4 h-4 text-indigo-600" onchange="updateProgress()"></td>
+                                </tr>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="p-2 border border-gray-200 font-medium">Public Domain</td>
+                                    <td class="p-2 border border-gray-200 text-center"><input type="radio" name="awareness_public_domain" value="Unaware" class="w-4 h-4 text-indigo-600" onchange="updateProgress()"></td>
+                                    <td class="p-2 border border-gray-200 text-center"><input type="radio" name="awareness_public_domain" value="Somewhat Aware" class="w-4 h-4 text-indigo-600" onchange="updateProgress()"></td>
+                                    <td class="p-2 border border-gray-200 text-center"><input type="radio" name="awareness_public_domain" value="Aware" class="w-4 h-4 text-indigo-600" onchange="updateProgress()"></td>
+                                    <td class="p-2 border border-gray-200 text-center"><input type="radio" name="awareness_public_domain" value="Very Aware" class="w-4 h-4 text-indigo-600" onchange="updateProgress()"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION C: UTILIZATION OF OER -->
+            <div class="glass-panel rounded-2xl shadow-xl p-6 mb-6 section-hidden" id="section-c">
+                <div class="flex items-center mb-4 pb-3 border-b-2 border-indigo-100">
+                    <div class="w-10 h-10 rounded-full bg-indigo-600 text-white flex items-center justify-center text-lg font-bold mr-3">C</div>
+                    <div>
+                        <h2 class="text-xl font-bold text-gray-800">UTILIZATION OF OER</h2>
+                        <p class="text-gray-600 text-xs">Access, usage patterns and digital competence</p>
+                    </div>
+                </div>
+
+                <!-- Q10: Internet Access -->
+                <div class="question-card bg-white rounded-lg p-4 mb-4 shadow-sm border border-gray-100">
+                    <h3 class="font-semibold text-gray-800 mb-3 flex items-center text-sm">
+                        <span class="bg-indigo-100 text-indigo-700 rounded-full w-6 h-6 flex items-center justify-center text-xs mr-2">10</span>
+                        Do you have access to the internet?
+                    </h3>
+                    <div class="grid grid-cols-2 gap-3">
+                        <label class="cursor-pointer option-hover p-3 rounded-lg border-2 border-gray-200 transition-all">
+                            <input type="radio" name="internet_access" value="Yes" class="hidden radio-custom" onchange="updateProgress(); toggleInternetQuestions(true)">
+                            <div class="flex items-center justify-center">
+                                <i class="fas fa-wifi text-green-500 mr-2"></i>
+                                <span class="font-medium">Yes</span>
+                            </div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-3 rounded-lg border-2 border-gray-200 transition-all">
+                            <input type="radio" name="internet_access" value="No" class="hidden radio-custom" onchange="updateProgress(); toggleInternetQuestions(false)">
+                            <div class="flex items-center justify-center">
+                                <i class="fas fa-wifi-slash text-red-500 mr-2"></i>
+                                <span class="font-medium">No</span>
+                            </div>
+                        </label>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-2 italic bg-gray-50 p-2 rounded">
+                        <i class="fas fa-info-circle mr-1"></i> If "Yes," continue with Question 11. If "No," skip to Question 14.
+                    </p>
+                </div>
+
+                <!-- Q11: Internet Location (Conditional) -->
+                <div class="question-card bg-white rounded-lg p-4 mb-4 shadow-sm border border-gray-100 conditional-internet" style="display:none;">
+                    <h3 class="font-semibold text-gray-800 mb-3 flex items-center text-sm">
+                        <span class="bg-indigo-100 text-indigo-700 rounded-full w-6 h-6 flex items-center justify-center text-xs mr-2">11</span>
+                        Where do you access the internet? (You may tick more than one answer)
+                    </h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-xs border-collapse">
+                            <thead>
+                                <tr class="bg-gray-50">
+                                    <th class="p-2 text-left border border-gray-200">Location</th>
+                                    <th class="p-2 text-center border border-gray-200 w-16">Wi-Fi</th>
+                                    <th class="p-2 text-center border border-gray-200 w-16">LAN</th>
+                                    <th class="p-2 text-center border border-gray-200 w-20">Mobile Network</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="p-2 border border-gray-200">University Library computer lab</td>
+                                    <td class="p-2 border border-gray-200 text-center"><input type="checkbox" name="loc_library_wifi" class="w-4 h-4 rounded text-indigo-600" onchange="updateProgress()"></td>
+                                    <td class="p-2 border border-gray-200 text-center"><input type="checkbox" name="loc_library_lan" class="w-4 h-4 rounded text-indigo-600" onchange="updateProgress()"></td>
+                                    <td class="p-2 border border-gray-200 text-center"><input type="checkbox" name="loc_library_mobile" class="w-4 h-4 rounded text-indigo-600" onchange="updateProgress()"></td>
+                                </tr>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="p-2 border border-gray-200">Office</td>
+                                    <td class="p-2 border border-gray-200 text-center"><input type="checkbox" name="loc_office_wifi" class="w-4 h-4 rounded text-indigo-600" onchange="updateProgress()"></td>
+                                    <td class="p-2 border border-gray-200 text-center"><input type="checkbox" name="loc_office_lan" class="w-4 h-4 rounded text-indigo-600" onchange="updateProgress()"></td>
+                                    <td class="p-2 border border-gray-200 text-center"><input type="checkbox" name="loc_office_mobile" class="w-4 h-4 rounded text-indigo-600" onchange="updateProgress()"></td>
+                                </tr>
+                                <tr class="hover:bg-gray-50 bg-orange-50">
+                                    <td class="p-2 border border-gray-200">
+                                        <div class="font-semibold text-orange-800 mb-1">
+                                            <i class="fas fa-university mr-1 text-orange-600"></i>
+                                            Other University Premises
+                                        </div>
+                                        <input type="text" name="other_uni_premises_name" class="w-full p-1.5 text-xs border-2 border-orange-300 rounded focus:border-orange-500 focus:outline-none bg-white" placeholder="Specify location here..." oninput="updateProgress()">
+                                    </td>
+                                    <td class="p-2 border border-gray-200 text-center"><input type="checkbox" name="loc_other_uni_wifi" class="w-4 h-4 rounded text-indigo-600" onchange="updateProgress()"></td>
+                                    <td class="p-2 border border-gray-200 text-center"><input type="checkbox" name="loc_other_uni_lan" class="w-4 h-4 rounded text-indigo-600" onchange="updateProgress()"></td>
+                                    <td class="p-2 border border-gray-200 text-center"><input type="checkbox" name="loc_other_uni_mobile" class="w-4 h-4 rounded text-indigo-600" onchange="updateProgress()"></td>
+                                </tr>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="p-2 border border-gray-200">Home</td>
+                                    <td class="p-2 border border-gray-200 text-center"><input type="checkbox" name="loc_home_wifi" class="w-4 h-4 rounded text-indigo-600" onchange="updateProgress()"></td>
+                                    <td class="p-2 border border-gray-200 text-center"><input type="checkbox" name="loc_home_lan" class="w-4 h-4 rounded text-indigo-600" onchange="updateProgress()"></td>
+                                    <td class="p-2 border border-gray-200 text-center"><input type="checkbox" name="loc_home_mobile" class="w-4 h-4 rounded text-indigo-600" onchange="updateProgress()"></td>
+                                </tr>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="p-2 border border-gray-200">Internet Café</td>
+                                    <td class="p-2 border border-gray-200 text-center"><input type="checkbox" name="loc_cafe_wifi" class="w-4 h-4 rounded text-indigo-600" onchange="updateProgress()"></td>
+                                    <td class="p-2 border border-gray-200 text-center"><input type="checkbox" name="loc_cafe_lan" class="w-4 h-4 rounded text-indigo-600" onchange="updateProgress()"></td>
+                                    <td class="p-2 border border-gray-200 text-center"><input type="checkbox" name="loc_cafe_mobile" class="w-4 h-4 rounded text-indigo-600" onchange="updateProgress()"></td>
+                                </tr>
+                                <tr class="hover:bg-gray-50 bg-orange-50">
+                                    <td class="p-2 border border-gray-200">
+                                        <div class="font-semibold text-orange-800 mb-1">
+                                            <i class="fas fa-map-marked-alt mr-1 text-orange-600"></i>
+                                            Others (Specify below)
+                                        </div>
+                                        <input type="text" name="other_location_name" class="w-full p-1.5 text-xs border-2 border-orange-300 rounded focus:border-orange-500 focus:outline-none bg-white" placeholder="Specify other location..." oninput="updateProgress()">
+                                    </td>
+                                    <td class="p-2 border border-gray-200 text-center"><input type="checkbox" name="loc_others_wifi" class="w-4 h-4 rounded text-indigo-600" onchange="updateProgress()"></td>
+                                    <td class="p-2 border border-gray-200 text-center"><input type="checkbox" name="loc_others_lan" class="w-4 h-4 rounded text-indigo-600" onchange="updateProgress()"></td>
+                                    <td class="p-2 border border-gray-200 text-center"><input type="checkbox" name="loc_others_mobile" class="w-4 h-4 rounded text-indigo-600" onchange="updateProgress()"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-xs text-orange-700 mt-2 italic bg-orange-50 p-2 rounded">
+                        <i class="fas fa-info-circle mr-1"></i> For "Other University Premises" and "Others", please type your specific location in the text fields provided before selecting connection types.
+                    </p>
+                </div>
+
+                <!-- Q12: Devices -->
+                <div class="question-card bg-white rounded-lg p-4 mb-4 shadow-sm border border-gray-100 conditional-internet" style="display:none;">
+                    <h3 class="font-semibold text-gray-800 mb-3 flex items-center text-sm">
+                        <span class="bg-indigo-100 text-indigo-700 rounded-full w-6 h-6 flex items-center justify-center text-xs mr-2">12</span>
+                        Which of the following devices do you use to access the internet? (You may choose more than one device)
+                    </h3>
+                    <div class="grid grid-cols-2 gap-2 text-sm">
+                        <label class="cursor-pointer option-hover p-3 rounded-lg border-2 border-gray-200 transition-all">
+                            <input type="checkbox" name="devices" value="Desktop computer" class="hidden checkbox-custom" onchange="updateProgress()">
+                            <div class="flex items-center"><i class="fas fa-desktop mr-2 text-gray-600"></i><span>Desktop computer</span></div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-3 rounded-lg border-2 border-gray-200 transition-all">
+                            <input type="checkbox" name="devices" value="Laptop computer" class="hidden checkbox-custom" onchange="updateProgress()">
+                            <div class="flex items-center"><i class="fas fa-laptop mr-2 text-gray-600"></i><span>Laptop computer</span></div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-3 rounded-lg border-2 border-gray-200 transition-all">
+                            <input type="checkbox" name="devices" value="Mobile phone" class="hidden checkbox-custom" onchange="updateProgress()">
+                            <div class="flex items-center"><i class="fas fa-mobile-alt mr-2 text-gray-600"></i><span>Mobile phone</span></div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-3 rounded-lg border-2 border-gray-200 transition-all">
+                            <input type="checkbox" name="devices" value="Tablet" class="hidden checkbox-custom" onchange="updateProgress()">
+                            <div class="flex items-center"><i class="fas fa-tablet-alt mr-2 text-gray-600"></i><span>Tablet</span></div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-3 rounded-lg border-2 border-gray-200 transition-all md:col-span-2">
+                            <input type="checkbox" name="devices" value="Others" class="hidden checkbox-custom" onchange="toggleSpecifyCheckbox(this, 'devices-specify-container')">
+                            <div class="flex items-center">
+                                <i class="fas fa-plus-circle text-indigo-500 mr-2"></i>
+                                <span>Other devices (Please specify below)</span>
+                            </div>
+                        </label>
+                    </div>
+                    <div id="devices-specify-container" class="specify-input">
+                        <div class="specify-container">
+                            <label class="block text-xs font-semibold text-blue-800 mb-1">Please specify other devices:</label>
+                            <input type="text" name="devices_specify" class="specify-field text-sm" placeholder="Enter other device types..." oninput="updateProgress()">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Digital Competence Definition -->
+                <div class="bg-blue-50 border-l-4 border-blue-500 p-3 mb-4 rounded-r-lg">
+                    <p class="text-xs text-blue-800">
+                        <strong>Section D: Digital Competence</strong> - The term "digital competence" refers to the values, beliefs, knowledge, skills, and attitudes required to proficiently use ICTs, including computer hardware, software, and the Internet, to research, access, organize, adopt, utilize and evaluate information for generating new knowledge. The concept of "digital competence" also includes knowledge of open licensing and copyright issues.
+                    </p>
+                </div>
+
+                <!-- Q13: Digital Competence -->
+                <div class="question-card bg-white rounded-lg p-4 mb-4 shadow-sm border border-gray-100">
+                    <h3 class="font-semibold text-gray-800 mb-3 flex items-center text-sm">
+                        <span class="bg-indigo-100 text-indigo-700 rounded-full w-6 h-6 flex items-center justify-center text-xs mr-2">13</span>
+                        What is your digital competence level?
+                    </h3>
+                    <div class="grid grid-cols-2 gap-2 text-sm">
+                        <label class="cursor-pointer option-hover p-3 rounded-lg border-2 border-gray-200 transition-all">
+                            <input type="radio" name="digital_competence" value="None" class="hidden radio-custom" onchange="updateProgress()">
+                            <div class="flex items-center"><i class="fas fa-times-circle text-red-500 mr-2"></i><span>None</span></div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-3 rounded-lg border-2 border-gray-200 transition-all">
+                            <input type="radio" name="digital_competence" value="Basic skills" class="hidden radio-custom" onchange="updateProgress()">
+                            <div class="flex items-center"><i class="fas fa-seedling text-green-500 mr-2"></i><span>Basic skills</span></div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-3 rounded-lg border-2 border-gray-200 transition-all">
+                            <input type="radio" name="digital_competence" value="Intermediate skills" class="hidden radio-custom" onchange="updateProgress()">
+                            <div class="flex items-center"><i class="fas fa-layer-group text-blue-500 mr-2"></i><span>Intermediate skills</span></div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-3 rounded-lg border-2 border-gray-200 transition-all">
+                            <input type="radio" name="digital_competence" value="Advanced skills" class="hidden radio-custom" onchange="updateProgress()">
+                            <div class="flex items-center"><i class="fas fa-rocket text-purple-500 mr-2"></i><span>Advanced skills</span></div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Section E: Usage of OER -->
+                <div class="bg-indigo-50 border-l-4 border-indigo-500 p-2 mb-4 rounded-r">
+                    <p class="text-xs font-bold text-indigo-800">Section E: Usage of OER</p>
+                </div>
+
+                <!-- Q14: Used OER -->
+                <div class="question-card bg-white rounded-lg p-4 mb-4 shadow-sm border border-gray-100">
+                    <h3 class="font-semibold text-gray-800 mb-3 flex items-center text-sm">
+                        <span class="bg-indigo-100 text-indigo-700 rounded-full w-6 h-6 flex items-center justify-center text-xs mr-2">14</span>
+                        Have you ever used Open Educational Resources (OER)?
+                    </h3>
+                    <div class="grid grid-cols-3 gap-2 text-sm">
+                        <label class="cursor-pointer option-hover p-3 rounded-lg border-2 border-gray-200 transition-all text-center">
+                            <input type="radio" name="used_oer" value="Yes" class="hidden radio-custom" onchange="updateProgress(); toggleOERUsage(true)">
+                            <div><i class="fas fa-check-circle text-green-500 text-xl mb-1 block"></i><span>Yes</span></div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-3 rounded-lg border-2 border-gray-200 transition-all text-center">
+                            <input type="radio" name="used_oer" value="No" class="hidden radio-custom" onchange="updateProgress(); toggleOERUsage(false)">
+                            <div><i class="fas fa-times-circle text-red-500 text-xl mb-1 block"></i><span>No</span></div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-3 rounded-lg border-2 border-gray-200 transition-all text-center">
+                            <input type="radio" name="used_oer" value="Don't Know" class="hidden radio-custom" onchange="updateProgress(); toggleOERUsage(false)">
+                            <div><i class="fas fa-question-circle text-yellow-500 text-xl mb-1 block"></i><span>Don't Know</span></div>
+                        </label>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-2 italic bg-gray-50 p-2 rounded">
+                        <i class="fas fa-info-circle mr-1"></i> If "Yes," continue with Question 15. If "No" or "Don't Know," skip to Question 24.
+                    </p>
+                </div>
+
+                <!-- Q15: OER Repositories Usage -->
+                <div class="question-card bg-white rounded-lg p-4 mb-4 shadow-sm border border-gray-100 conditional-oer-yes" style="display:none;">
+                    <h3 class="font-semibold text-gray-800 mb-3 flex items-center text-sm">
+                        <span class="bg-indigo-100 text-indigo-700 rounded-full w-6 h-6 flex items-center justify-center text-xs mr-2">15</span>
+                        How often do you consult the following Open Educational Resources repositories?
+                    </h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-xs border-collapse">
+                            <thead>
+                                <tr class="bg-gray-50">
+                                    <th class="p-1 text-left border border-gray-200">Repository</th>
+                                    <th class="p-1 text-center border border-gray-200 w-12">Daily</th>
+                                    <th class="p-1 text-center border border-gray-200 w-12">Once a week</th>
+                                    <th class="p-1 text-center border border-gray-200 w-12">Twice a week</th>
+                                    <th class="p-1 text-center border border-gray-200 w-12">Monthly</th>
+                                    <th class="p-1 text-center border border-gray-200 w-12">Occasionally</th>
+                                    <th class="p-1 text-center border border-gray-200 w-12">Never</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="hover:bg-gray-50"><td class="p-1 border border-gray-200">MIT OpenCourseware</td>
+                                    <td class="p-1 border border-gray-200 text-center"><input type="radio" name="freq_mit" value="Daily" class="w-3 h-3" onchange="updateProgress()"></td>
+                                    <td class="p-1 border border-gray-200 text-center"><input type="radio" name="freq_mit" value="Weekly" class="w-3 h-3" onchange="updateProgress()"></td>
+                                    <td class="p-1 border border-gray-200 text-center"><input type="radio" name="freq_mit" value="Twice weekly" class="w-3 h-3" onchange="updateProgress()"></td>
+                                    <td class="p-1 border border-gray-200 text-center"><input type="radio" name="freq_mit" value="Monthly" class="w-3 h-3" onchange="updateProgress()"></td>
+                                    <td class="p-1 border border-gray-200 text-center"><input type="radio" name="freq_mit" value="Occasionally" class="w-3 h-3" onchange="updateProgress()"></td>
+                                    <td class="p-1 border border-gray-200 text-center"><input type="radio" name="freq_mit" value="Never" class="w-3 h-3" onchange="updateProgress()"></td>
+                                </tr>
+                                <tr class="hover:bg-gray-50"><td class="p-1 border border-gray-200">OER Commons</td>
+                                    <td class="p-1 border border-gray-200 text-center"><input type="radio" name="freq_commons" value="Daily" class="w-3 h-3" onchange="updateProgress()"></td>
+                                    <td class="p-1 border border-gray-200 text-center"><input type="radio" name="freq_commons" value="Weekly" class="w-3 h-3" onchange="updateProgress()"></td>
+                                    <td class="p-1 border border-gray-200 text-center"><input type="radio" name="freq_commons" value="Twice weekly" class="w-3 h-3" onchange="updateProgress()"></td>
+                                    <td class="p-1 border border-gray-200 text-center"><input type="radio" name="freq_commons" value="Monthly" class="w-3 h-3" onchange="updateProgress()"></td>
+                                    <td class="p-1 border border-gray-200 text-center"><input type="radio" name="freq_commons" value="Occasionally" class="w-3 h-3" onchange="updateProgress()"></td>
+                                    <td class="p-1 border border-gray-200 text-center"><input type="radio" name="freq_commons" value="Never" class="w-3 h-3" onchange="updateProgress()"></td>
+                                </tr>
+                                <tr class="hover:bg-gray-50"><td class="p-1 border border-gray-200">OUT Open Courseware</td>
+                                    <td class="p-1 border border-gray-200 text-center"><input type="radio" name="freq_out" value="Daily" class="w-3 h-3" onchange="updateProgress()"></td>
+                                    <td class="p-1 border border-gray-200 text-center"><input type="radio" name="freq_out" value="Weekly" class="w-3 h-3" onchange="updateProgress()"></td>
+                                    <td class="p-1 border border-gray-200 text-center"><input type="radio" name="freq_out" value="Twice weekly" class="w-3 h-3" onchange="updateProgress()"></td>
+                                    <td class="p-1 border border-gray-200 text-center"><input type="radio" name="freq_out" value="Monthly" class="w-3 h-3" onchange="updateProgress()"></td>
+                                    <td class="p-1 border border-gray-200 text-center"><input type="radio" name="freq_out" value="Occasionally" class="w-3 h-3" onchange="updateProgress()"></td>
+                                    <td class="p-1 border border-gray-200 text-center"><input type="radio" name="freq_out" value="Never" class="w-3 h-3" onchange="updateProgress()"></td>
+                                </tr>
+                                <tr class="hover:bg-gray-50"><td class="p-1 border border-gray-200">MERLOT</td>
+                                    <td class="p-1 border border-gray-200 text-center"><input type="radio" name="freq_merlot" value="Daily" class="w-3 h-3" onchange="updateProgress()"></td>
+                                    <td class="p-1 border border-gray-200 text-center"><input type="radio" name="freq_merlot" value="Weekly" class="w-3 h-3" onchange="updateProgress()"></td>
+                                    <td class="p-1 border border-gray-200 text-center"><input type="radio" name="freq_merlot" value="Twice weekly" class="w-3 h-3" onchange="updateProgress()"></td>
+                                    <td class="p-1 border border-gray-200 text-center"><input type="radio" name="freq_merlot" value="Monthly" class="w-3 h-3" onchange="updateProgress()"></td>
+                                    <td class="p-1 border border-gray-200 text-center"><input type="radio" name="freq_merlot" value="Occasionally" class="w-3 h-3" onchange="updateProgress()"></td>
+                                    <td class="p-1 border border-gray-200 text-center"><input type="radio" name="freq_merlot" value="Never" class="w-3 h-3" onchange="updateProgress()"></td>
+                                </tr>
+                                <tr class="hover:bg-gray-50"><td class="p-1 border border-gray-200">Directory of Open Access Books (DOAB)</td>
+                                    <td class="p-1 border border-gray-200 text-center"><input type="radio" name="freq_doab" value="Daily" class="w-3 h-3" onchange="updateProgress()"></td>
+                                    <td class="p-1 border border-gray-200 text-center"><input type="radio" name="freq_doab" value="Weekly" class="w-3 h-3" onchange="updateProgress()"></td>
+                                    <td class="p-1 border border-gray-200 text-center"><input type="radio" name="freq_doab" value="Twice weekly" class="w-3 h-3" onchange="updateProgress()"></td>
+                                    <td class="p-1 border border-gray-200 text-center"><input type="radio" name="freq_doab" value="Monthly" class="w-3 h-3" onchange="updateProgress()"></td>
+                                    <td class="p-1 border border-gray-200 text-center"><input type="radio" name="freq_doab" value="Occasionally" class="w-3 h-3" onchange="updateProgress()"></td>
+                                    <td class="p-1 border border-gray-200 text-center"><input type="radio" name="freq_doab" value="Never" class="w-3 h-3" onchange="updateProgress()"></td>
+                                </tr>
+                                <tr class="hover:bg-gray-50"><td class="p-1 border border-gray-200">OER@AVU</td>
+                                    <td class="p-1 border border-gray-200 text-center"><input type="radio" name="freq_avu" value="Daily" class="w-3 h-3" onchange="updateProgress()"></td>
+                                    <td class="p-1 border border-gray-200 text-center"><input type="radio" name="freq_avu" value="Weekly" class="w-3 h-3" onchange="updateProgress()"></td>
+                                    <td class="p-1 border border-gray-200 text-center"><input type="radio" name="freq_avu" value="Twice weekly" class="w-3 h-3" onchange="updateProgress()"></td>
+                                    <td class="p-1 border border-gray-200 text-center"><input type="radio" name="freq_avu" value="Monthly" class="w-3 h-3" onchange="updateProgress()"></td>
+                                    <td class="p-1 border border-gray-200 text-center"><input type="radio" name="freq_avu" value="Occasionally" class="w-3 h-3" onchange="updateProgress()"></td>
+                                    <td class="p-1 border border-gray-200 text-center"><input type="radio" name="freq_avu" value="Never" class="w-3 h-3" onchange="updateProgress()"></td>
+                                </tr>
+                                <tr class="hover:bg-gray-50"><td class="p-1 border border-gray-200">OER Africa</td>
+                                    <td class="p-1 border border-gray-200 text-center"><input type="radio" name="freq_africa" value="Daily" class="w-3 h-3" onchange="updateProgress()"></td>
+                                    <td class="p-1 border border-gray-200 text-center"><input type="radio" name="freq_africa" value="Weekly" class="w-3 h-3" onchange="updateProgress()"></td>
+                                    <td class="p-1 border border-gray-200 text-center"><input type="radio" name="freq_africa" value="Twice weekly" class="w-3 h-3" onchange="updateProgress()"></td>
+                                    <td class="p-1 border border-gray-200 text-center"><input type="radio" name="freq_africa" value="Monthly" class="w-3 h-3" onchange="updateProgress()"></td>
+                                    <td class="p-1 border border-gray-200 text-center"><input type="radio" name="freq_africa" value="Occasionally" class="w-3 h-3" onchange="updateProgress()"></td>
+                                    <td class="p-1 border border-gray-200 text-center"><input type="radio" name="freq_africa" value="Never" class="w-3 h-3" onchange="updateProgress()"></td>
+                                </tr>
+                                <tr class="hover:bg-gray-50"><td class="p-1 border border-gray-200">TESSA</td>
+                                    <td class="p-1 border border-gray-200 text-center"><input type="radio" name="freq_tessa" value="Daily" class="w-3 h-3" onchange="updateProgress()"></td>
+                                    <td class="p-1 border border-gray-200 text-center"><input type="radio" name="freq_tessa" value="Weekly" class="w-3 h-3" onchange="updateProgress()"></td>
+                                    <td class="p-1 border border-gray-200 text-center"><input type="radio" name="freq_tessa" value="Twice weekly" class="w-3 h-3" onchange="updateProgress()"></td>
+                                    <td class="p-1 border border-gray-200 text-center"><input type="radio" name="freq_tessa" value="Monthly" class="w-3 h-3" onchange="updateProgress()"></td>
+                                    <td class="p-1 border border-gray-200 text-center"><input type="radio" name="freq_tessa" value="Occasionally" class="w-3 h-3" onchange="updateProgress()"></td>
+                                    <td class="p-1 border border-gray-200 text-center"><input type="radio" name="freq_tessa" value="Never" class="w-3 h-3" onchange="updateProgress()"></td>
+                                </tr>
+                                <tr class="hover:bg-gray-50"><td class="p-1 border border-gray-200">NOUN e-Courseware</td>
+                                    <td class="p-1 border border-gray-200 text-center"><input type="radio" name="freq_noun" value="Daily" class="w-3 h-3" onchange="updateProgress()"></td>
+                                    <td class="p-1 border border-gray-200 text-center"><input type="radio" name="freq_noun" value="Weekly" class="w-3 h-3" onchange="updateProgress()"></td>
+                                    <td class="p-1 border border-gray-200 text-center"><input type="radio" name="freq_noun" value="Twice weekly" class="w-3 h-3" onchange="updateProgress()"></td>
+                                    <td class="p-1 border border-gray-200 text-center"><input type="radio" name="freq_noun" value="Monthly" class="w-3 h-3" onchange="updateProgress()"></td>
+                                    <td class="p-1 border border-gray-200 text-center"><input type="radio" name="freq_noun" value="Occasionally" class="w-3 h-3" onchange="updateProgress()"></td>
+                                    <td class="p-1 border border-gray-200 text-center"><input type="radio" name="freq_noun" value="Never" class="w-3 h-3" onchange="updateProgress()"></td>
+                                </tr>
+                                <tr class="hover:bg-gray-50"><td class="p-1 border border-gray-200">IGNOU e-Courseware</td>
+                                    <td class="p-1 border border-gray-200 text-center"><input type="radio" name="freq_ignou" value="Daily" class="w-3 h-3" onchange="updateProgress()"></td>
+                                    <td class="p-1 border border-gray-200 text-center"><input type="radio" name="freq_ignou" value="Weekly" class="w-3 h-3" onchange="updateProgress()"></td>
+                                    <td class="p-1 border border-gray-200 text-center"><input type="radio" name="freq_ignou" value="Twice weekly" class="w-3 h-3" onchange="updateProgress()"></td>
+                                    <td class="p-1 border border-gray-200 text-center"><input type="radio" name="freq_ignou" value="Monthly" class="w-3 h-3" onchange="updateProgress()"></td>
+                                    <td class="p-1 border border-gray-200 text-center"><input type="radio" name="freq_ignou" value="Occasionally" class="w-3 h-3" onchange="updateProgress()"></td>
+                                    <td class="p-1 border border-gray-200 text-center"><input type="radio" name="freq_ignou" value="Never" class="w-3 h-3" onchange="updateProgress()"></td>
+                                </tr>
+                                <tr class="hover:bg-gray-50"><td class="p-1 border border-gray-200">OpenStax</td>
+                                    <td class="p-1 border border-gray-200 text-center"><input type="radio" name="freq_openstax" value="Daily" class="w-3 h-3" onchange="updateProgress()"></td>
+                                    <td class="p-1 border border-gray-200 text-center"><input type="radio" name="freq_openstax" value="Weekly" class="w-3 h-3" onchange="updateProgress()"></td>
+                                    <td class="p-1 border border-gray-200 text-center"><input type="radio" name="freq_openstax" value="Twice weekly" class="w-3 h-3" onchange="updateProgress()"></td>
+                                    <td class="p-1 border border-gray-200 text-center"><input type="radio" name="freq_openstax" value="Monthly" class="w-3 h-3" onchange="updateProgress()"></td>
+                                    <td class="p-1 border border-gray-200 text-center"><input type="radio" name="freq_openstax" value="Occasionally" class="w-3 h-3" onchange="updateProgress()"></td>
+                                    <td class="p-1 border border-gray-200 text-center"><input type="radio" name="freq_openstax" value="Never" class="w-3 h-3" onchange="updateProgress()"></td>
+                                </tr>
+                                <tr class="hover:bg-gray-50"><td class="p-1 border border-gray-200">Open Textbook Library</td>
+                                    <td class="p-1 border border-gray-200 text-center"><input type="radio" name="freq_otl" value="Daily" class="w-3 h-3" onchange="updateProgress()"></td>
+                                    <td class="p-1 border border-gray-200 text-center"><input type="radio" name="freq_otl" value="Weekly" class="w-3 h-3" onchange="updateProgress()"></td>
+                                    <td class="p-1 border border-gray-200 text-center"><input type="radio" name="freq_otl" value="Twice weekly" class="w-3 h-3" onchange="updateProgress()"></td>
+                                    <td class="p-1 border border-gray-200 text-center"><input type="radio" name="freq_otl" value="Monthly" class="w-3 h-3" onchange="updateProgress()"></td>
+                                    <td class="p-1 border border-gray-200 text-center"><input type="radio" name="freq_otl" value="Occasionally" class="w-3 h-3" onchange="updateProgress()"></td>
+                                    <td class="p-1 border border-gray-200 text-center"><input type="radio" name="freq_otl" value="Never" class="w-3 h-3" onchange="updateProgress()"></td>
+                                </tr>
+                                <tr class="hover:bg-gray-50"><td class="p-1 border border-gray-200">BCcampus</td>
+                                    <td class="p-1 border border-gray-200 text-center"><input type="radio" name="freq_bccampus" value="Daily" class="w-3 h-3" onchange="updateProgress()"></td>
+                                    <td class="p-1 border border-gray-200 text-center"><input type="radio" name="freq_bccampus" value="Weekly" class="w-3 h-3" onchange="updateProgress()"></td>
+                                    <td class="p-1 border border-gray-200 text-center"><input type="radio" name="freq_bccampus" value="Twice weekly" class="w-3 h-3" onchange="updateProgress()"></td>
+                                    <td class="p-1 border border-gray-200 text-center"><input type="radio" name="freq_bccampus" value="Monthly" class="w-3 h-3" onchange="updateProgress()"></td>
+                                    <td class="p-1 border border-gray-200 text-center"><input type="radio" name="freq_bccampus" value="Occasionally" class="w-3 h-3" onchange="updateProgress()"></td>
+                                    <td class="p-1 border border-gray-200 text-center"><input type="radio" name="freq_bccampus" value="Never" class="w-3 h-3" onchange="updateProgress()"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="mt-3">
+                        <label class="block text-xs font-medium text-gray-700 mb-1 flex items-center">
+                            <i class="fas fa-plus-circle text-indigo-500 mr-1"></i>
+                            Other repositories (Please specify):
+                        </label>
+                        <div class="bg-blue-50 border-2 border-dashed border-blue-300 rounded-lg p-2">
+                            <input type="text" name="other_repositories" class="w-full p-2 border border-gray-300 rounded text-xs focus:border-indigo-500 focus:outline-none" placeholder="List other repositories you use..." oninput="updateProgress()">
+                            <p class="text-xs text-blue-600 mt-1 italic">Separate multiple repositories with commas</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Q16: Types of OER Materials -->
+                <div class="question-card bg-white rounded-lg p-4 mb-4 shadow-sm border border-gray-100 conditional-oer-yes" style="display:none;">
+                    <h3 class="font-semibold text-gray-800 mb-3 flex items-center text-sm">
+                        <span class="bg-indigo-100 text-indigo-700 rounded-full w-6 h-6 flex items-center justify-center text-xs mr-2">16</span>
+                        What type of OER materials have you consulted? (You may select more than one answer)
+                    </h3>
+                    <div class="grid grid-cols-2 md:grid-cols-3 gap-2 text-xs">
+                        <label class="cursor-pointer option-hover p-2 rounded-lg border-2 border-gray-200 transition-all">
+                            <input type="checkbox" name="oer_types" value="Lecture Notes" class="hidden checkbox-custom" onchange="updateProgress()">
+                            <div>Lecture Notes</div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-2 rounded-lg border-2 border-gray-200 transition-all">
+                            <input type="checkbox" name="oer_types" value="Open Textbook" class="hidden checkbox-custom" onchange="updateProgress()">
+                            <div>Open Textbook</div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-2 rounded-lg border-2 border-gray-200 transition-all">
+                            <input type="checkbox" name="oer_types" value="Simulation" class="hidden checkbox-custom" onchange="updateProgress()">
+                            <div>Simulation</div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-2 rounded-lg border-2 border-gray-200 transition-all">
+                            <input type="checkbox" name="oer_types" value="Full Course" class="hidden checkbox-custom" onchange="updateProgress()">
+                            <div>Full Course</div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-2 rounded-lg border-2 border-gray-200 transition-all">
+                            <input type="checkbox" name="oer_types" value="Module" class="hidden checkbox-custom" onchange="updateProgress()">
+                            <div>Module</div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-2 rounded-lg border-2 border-gray-200 transition-all">
+                            <input type="checkbox" name="oer_types" value="Interactive" class="hidden checkbox-custom" onchange="updateProgress()">
+                            <div>Interactive</div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-2 rounded-lg border-2 border-gray-200 transition-all">
+                            <input type="checkbox" name="oer_types" value="Assignment" class="hidden checkbox-custom" onchange="updateProgress()">
+                            <div>Assignment</div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-2 rounded-lg border-2 border-gray-200 transition-all">
+                            <input type="checkbox" name="oer_types" value="Unit of Study" class="hidden checkbox-custom" onchange="updateProgress()">
+                            <div>Unit of Study</div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-2 rounded-lg border-2 border-gray-200 transition-all">
+                            <input type="checkbox" name="oer_types" value="Courseware" class="hidden checkbox-custom" onchange="updateProgress()">
+                            <div>Courseware</div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-2 rounded-lg border-2 border-gray-200 transition-all">
+                            <input type="checkbox" name="oer_types" value="Curricula and syllabi" class="hidden checkbox-custom" onchange="updateProgress()">
+                            <div>Curricula and syllabi</div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-2 rounded-lg border-2 border-gray-200 transition-all">
+                            <input type="checkbox" name="oer_types" value="Tests" class="hidden checkbox-custom" onchange="updateProgress()">
+                            <div>Tests</div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-2 rounded-lg border-2 border-gray-200 transition-all">
+                            <input type="checkbox" name="oer_types" value="Projects" class="hidden checkbox-custom" onchange="updateProgress()">
+                            <div>Projects</div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-2 rounded-lg border-2 border-gray-200 transition-all md:col-span-3">
+                            <input type="checkbox" name="oer_types" value="Others" class="hidden checkbox-custom" onchange="toggleSpecifyCheckbox(this, 'oer-types-specify-container')">
+                            <div class="flex items-center">
+                                <i class="fas fa-plus-circle text-indigo-500 mr-2"></i>
+                                <span>Other material types (Please specify below)</span>
+                            </div>
+                        </label>
+                    </div>
+                    <div id="oer-types-specify-container" class="specify-input">
+                        <div class="specify-container">
+                            <label class="block text-xs font-semibold text-blue-800 mb-1">Please specify other OER material types:</label>
+                            <input type="text" name="oer_types_specify" class="specify-field text-sm" placeholder="Enter other material types..." oninput="updateProgress()">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Q17: Preferred Format -->
+                <div class="question-card bg-white rounded-lg p-4 mb-4 shadow-sm border border-gray-100 conditional-oer-yes" style="display:none;">
+                    <h3 class="font-semibold text-gray-800 mb-3 flex items-center text-sm">
+                        <span class="bg-indigo-100 text-indigo-700 rounded-full w-6 h-6 flex items-center justify-center text-xs mr-2">17</span>
+                        Which OER format do you prefer to consult the most?
+                    </h3>
+                    <div class="grid grid-cols-2 gap-2 text-sm">
+                        <label class="cursor-pointer option-hover p-3 rounded-lg border-2 border-gray-200 transition-all">
+                            <input type="radio" name="preferred_format" value="Video" class="hidden radio-custom" onchange="updateProgress(); toggleSpecifyField('format-specify-container', false)">
+                            <div class="flex items-center"><i class="fas fa-video text-red-500 mr-2"></i><span>Video (eg. YouTube)</span></div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-3 rounded-lg border-2 border-gray-200 transition-all">
+                            <input type="radio" name="preferred_format" value="Text" class="hidden radio-custom" onchange="updateProgress(); toggleSpecifyField('format-specify-container', false)">
+                            <div class="flex items-center"><i class="fas fa-file-alt text-blue-500 mr-2"></i><span>Text</span></div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-3 rounded-lg border-2 border-gray-200 transition-all">
+                            <input type="radio" name="preferred_format" value="Audio" class="hidden radio-custom" onchange="updateProgress(); toggleSpecifyField('format-specify-container', false)">
+                            <div class="flex items-center"><i class="fas fa-headphones text-green-500 mr-2"></i><span>Audio</span></div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-3 rounded-lg border-2 border-gray-200 transition-all">
+                            <input type="radio" name="preferred_format" value="Others" class="hidden radio-custom" onchange="updateProgress(); toggleSpecifyField('format-specify-container', true)">
+                            <div class="flex items-center">
+                                <i class="fas fa-plus-circle text-indigo-500 mr-2"></i>
+                                <span>Other format (Specify below)</span>
+                            </div>
+                        </label>
+                    </div>
+                    <div id="format-specify-container" class="specify-input">
+                        <div class="specify-container">
+                            <label class="block text-xs font-semibold text-blue-800 mb-1">Please specify your preferred format:</label>
+                            <input type="text" name="preferred_format_specify" class="specify-field text-sm" placeholder="Enter preferred format..." oninput="updateProgress()">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Q18: Preferred Medium -->
+                <div class="question-card bg-white rounded-lg p-4 mb-4 shadow-sm border border-gray-100 conditional-oer-yes" style="display:none;">
+                    <h3 class="font-semibold text-gray-800 mb-3 flex items-center text-sm">
+                        <span class="bg-indigo-100 text-indigo-700 rounded-full w-6 h-6 flex items-center justify-center text-xs mr-2">18</span>
+                        Which OER medium do you prefer to consult the most?
+                    </h3>
+                    <div class="grid grid-cols-2 gap-3">
+                        <label class="cursor-pointer option-hover p-4 rounded-lg border-2 border-gray-200 transition-all text-center">
+                            <input type="radio" name="preferred_medium" value="Printed" class="hidden radio-custom" onchange="updateProgress()">
+                            <div>
+                                <i class="fas fa-print text-3xl mb-2 text-gray-600"></i>
+                                <span class="font-medium block">Printed</span>
+                            </div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-4 rounded-lg border-2 border-gray-200 transition-all text-center">
+                            <input type="radio" name="preferred_medium" value="Digital" class="hidden radio-custom" onchange="updateProgress()">
+                            <div>
+                                <i class="fas fa-laptop text-3xl mb-2 text-indigo-600"></i>
+                                <span class="font-medium block">Digital</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Q19: Purposes -->
+                <div class="question-card bg-white rounded-lg p-4 mb-4 shadow-sm border border-gray-100 conditional-oer-yes" style="display:none;">
+                    <h3 class="font-semibold text-gray-800 mb-3 flex items-center text-sm">
+                        <span class="bg-indigo-100 text-indigo-700 rounded-full w-6 h-6 flex items-center justify-center text-xs mr-2">19</span>
+                        For which of the following purposes do you consult Open Educational Resources (OER)? (You may select more than one answer)
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
+                        <label class="cursor-pointer option-hover p-2 rounded-lg border-2 border-gray-200 transition-all">
+                            <input type="checkbox" name="oer_purposes" value="Discussion Forums" class="hidden checkbox-custom" onchange="updateProgress()">
+                            <div>Participating in Discussion Forums on Moodle/Social Media</div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-2 rounded-lg border-2 border-gray-200 transition-all">
+                            <input type="checkbox" name="oer_purposes" value="Completing Assignments" class="hidden checkbox-custom" onchange="updateProgress()">
+                            <div>Completing Assignments</div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-2 rounded-lg border-2 border-gray-200 transition-all">
+                            <input type="checkbox" name="oer_purposes" value="Exam preparation" class="hidden checkbox-custom" onchange="updateProgress()">
+                            <div>Exam preparation for mid-timed tests and annual exams</div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-2 rounded-lg border-2 border-gray-200 transition-all">
+                            <input type="checkbox" name="oer_purposes" value="Extending knowledge" class="hidden checkbox-custom" onchange="updateProgress()">
+                            <div>Extending the frontier of knowledge</div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-2 rounded-lg border-2 border-gray-200 transition-all">
+                            <input type="checkbox" name="oer_purposes" value="Current awareness" class="hidden checkbox-custom" onchange="updateProgress()">
+                            <div>Current awareness</div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-2 rounded-lg border-2 border-gray-200 transition-all">
+                            <input type="checkbox" name="oer_purposes" value="Leisure" class="hidden checkbox-custom" onchange="updateProgress()">
+                            <div>Leisure</div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-2 rounded-lg border-2 border-gray-200 transition-all">
+                            <input type="checkbox" name="oer_purposes" value="Research" class="hidden checkbox-custom" onchange="updateProgress()">
+                            <div>Research purposes</div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-2 rounded-lg border-2 border-gray-200 transition-all">
+                            <input type="checkbox" name="oer_purposes" value="Consultancy" class="hidden checkbox-custom" onchange="updateProgress()">
+                            <div>Consultancy services</div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-2 rounded-lg border-2 border-gray-200 transition-all md:col-span-2">
+                            <input type="checkbox" name="oer_purposes" value="Others" class="hidden checkbox-custom" onchange="toggleSpecifyCheckbox(this, 'purposes-specify-container')">
+                            <div class="flex items-center">
+                                <i class="fas fa-plus-circle text-indigo-500 mr-2"></i>
+                                <span>Other purposes (Please specify below)</span>
+                            </div>
+                        </label>
+                    </div>
+                    <div id="purposes-specify-container" class="specify-input">
+                        <div class="specify-container">
+                            <label class="block text-xs font-semibold text-blue-800 mb-1">Please specify other purposes:</label>
+                            <input type="text" name="oer_purposes_specify" class="specify-field text-sm" placeholder="Enter other purposes..." oninput="updateProgress()">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Q20: Search Tools -->
+                <div class="question-card bg-white rounded-lg p-4 mb-4 shadow-sm border border-gray-100 conditional-oer-yes" style="display:none;">
+                    <h3 class="font-semibold text-gray-800 mb-3 flex items-center text-sm">
+                        <span class="bg-indigo-100 text-indigo-700 rounded-full w-6 h-6 flex items-center justify-center text-xs mr-2">20</span>
+                        Which search tool(s) do you use to locate Open Educational Resources? (You may select more than one answer)
+                    </h3>
+                    <div class="grid grid-cols-1 gap-2 text-xs">
+                        <label class="cursor-pointer option-hover p-2 rounded-lg border-2 border-gray-200 transition-all">
+                            <input type="checkbox" name="search_tools" value="Search engines" class="hidden checkbox-custom" onchange="updateProgress()">
+                            <div class="flex items-center"><i class="fab fa-google mr-2 text-blue-500"></i><span>Search engines (such as Google, Yahoo)</span></div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-2 rounded-lg border-2 border-gray-200 transition-all">
+                            <input type="checkbox" name="search_tools" value="Content OER repositories" class="hidden checkbox-custom" onchange="updateProgress()">
+                            <div class="flex items-center"><i class="fas fa-database mr-2 text-green-500"></i><span>Content OER repositories (eg. MIT, MERLOT)</span></div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-2 rounded-lg border-2 border-gray-200 transition-all">
+                            <input type="checkbox" name="search_tools" value="Portal OER repositories" class="hidden checkbox-custom" onchange="updateProgress()">
+                            <div class="flex items-center"><i class="fas fa-door-open mr-2 text-purple-500"></i><span>Portal OER repositories (eg. OER Commons)</span></div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-2 rounded-lg border-2 border-gray-200 transition-all">
+                            <input type="checkbox" name="search_tools" value="Content and Portal OER repositories" class="hidden checkbox-custom" onchange="updateProgress()">
+                            <div class="flex items-center"><i class="fas fa-globe-africa mr-2 text-orange-500"></i><span>Content and Portal OER repositories (Eg. OER Africa)</span></div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-2 rounded-lg border-2 border-gray-200 transition-all">
+                            <input type="checkbox" name="search_tools" value="Colleague assists" class="hidden checkbox-custom" onchange="updateProgress()">
+                            <div class="flex items-center"><i class="fas fa-user-friends mr-2 text-teal-500"></i><span>Colleague assists me in searching OER</span></div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-2 rounded-lg border-2 border-gray-200 transition-all">
+                            <input type="checkbox" name="search_tools" value="Library website" class="hidden checkbox-custom" onchange="updateProgress()">
+                            <div class="flex items-center"><i class="fas fa-university mr-2 text-indigo-500"></i><span>Listing from library website</span></div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-2 rounded-lg border-2 border-gray-200 transition-all">
+                            <input type="checkbox" name="search_tools" value="Others" class="hidden checkbox-custom" onchange="toggleSpecifyCheckbox(this, 'search-specify-container')">
+                            <div class="flex items-center">
+                                <i class="fas fa-plus-circle text-indigo-500 mr-2"></i>
+                                <span>Other search tools (Please specify below)</span>
+                            </div>
+                        </label>
+                    </div>
+                    <div id="search-specify-container" class="specify-input">
+                        <div class="specify-container">
+                            <label class="block text-xs font-semibold text-blue-800 mb-1">Please specify other search tools:</label>
+                            <input type="text" name="search_tools_specify" class="specify-field text-sm" placeholder="Enter other search tools..." oninput="updateProgress()">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Q21: Training -->
+                <div class="question-card bg-white rounded-lg p-4 mb-4 shadow-sm border border-gray-100 conditional-oer-yes" style="display:none;">
+                    <h3 class="font-semibold text-gray-800 mb-3 flex items-center text-sm">
+                        <span class="bg-indigo-100 text-indigo-700 rounded-full w-6 h-6 flex items-center justify-center text-xs mr-2">21</span>
+                        Have you attended any training on utilizing Open Educational Resources (OER)?
+                    </h3>
+                    <div class="space-y-2 text-sm">
+                        <label class="cursor-pointer option-hover p-3 rounded-lg border-2 border-gray-200 transition-all block">
+                            <input type="radio" name="training" value="Yes" class="hidden radio-custom" onchange="updateProgress(); toggleTraining(true)">
+                            <div class="flex items-center mb-1">
+                                <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                                <span class="font-medium">Yes</span>
+                            </div>
+                            <div id="training-yes-detail" class="hidden ml-6 mt-2">
+                                <label class="block text-xs text-gray-600 mb-1">Indicate where training was conducted:</label>
+                                <input type="text" name="training_location" class="w-full p-2 border border-gray-300 rounded text-xs focus:border-indigo-500 focus:outline-none" placeholder="Enter training location..." oninput="updateProgress()">
+                            </div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-3 rounded-lg border-2 border-gray-200 transition-all block">
+                            <input type="radio" name="training" value="No" class="hidden radio-custom" onchange="updateProgress(); toggleTraining(false)">
+                            <div class="flex items-center mb-1">
+                                <i class="fas fa-times-circle text-red-500 mr-2"></i>
+                                <span class="font-medium">No</span>
+                            </div>
+                            <div id="training-no-detail" class="hidden ml-6 mt-2">
+                                <label class="block text-xs text-gray-600 mb-1">Please explain why:</label>
+                                <textarea name="training_why_not" class="w-full p-2 border border-gray-300 rounded text-xs focus:border-indigo-500 focus:outline-none" rows="2" placeholder="Explain why you haven't attended training..." oninput="updateProgress()"></textarea>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Q22: Search Techniques -->
+                <div class="question-card bg-white rounded-lg p-4 mb-4 shadow-sm border border-gray-100 conditional-oer-yes" style="display:none;">
+                    <h3 class="font-semibold text-gray-800 mb-3 flex items-center text-sm">
+                        <span class="bg-indigo-100 text-indigo-700 rounded-full w-6 h-6 flex items-center justify-center text-xs mr-2">22</span>
+                        List any search techniques you use for searching Open Educational Resources. (You may select more than one answer)
+                    </h3>
+                    <div class="grid grid-cols-2 gap-2 text-xs">
+                        <label class="cursor-pointer option-hover p-2 rounded-lg border-2 border-gray-200 transition-all">
+                            <input type="checkbox" name="search_techniques" value="Boolean Operators" class="hidden checkbox-custom" onchange="updateProgress()">
+                            <div>Boolean Operators (AND, OR, NOT)</div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-2 rounded-lg border-2 border-gray-200 transition-all">
+                            <input type="checkbox" name="search_techniques" value="Phrase searching" class="hidden checkbox-custom" onchange="updateProgress()">
+                            <div>Phrase searching ("exact phrase")</div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-2 rounded-lg border-2 border-gray-200 transition-all">
+                            <input type="checkbox" name="search_techniques" value="Keyword searching" class="hidden checkbox-custom" onchange="updateProgress()">
+                            <div>Keyword searching</div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-2 rounded-lg border-2 border-gray-200 transition-all">
+                            <input type="checkbox" name="search_techniques" value="Truncation" class="hidden checkbox-custom" onchange="updateProgress()">
+                            <div>Truncation (*, ?)</div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-2 rounded-lg border-2 border-gray-200 transition-all">
+                            <input type="checkbox" name="search_techniques" value="Don't Know" class="hidden checkbox-custom" onchange="updateProgress()">
+                            <div>I Don't Know</div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-2 rounded-lg border-2 border-gray-200 transition-all">
+                            <input type="checkbox" name="search_techniques" value="Others" class="hidden checkbox-custom" onchange="toggleSpecifyCheckbox(this, 'techniques-specify-container')">
+                            <div class="flex items-center">
+                                <i class="fas fa-plus-circle text-indigo-500 mr-2"></i>
+                                <span>Other techniques (Specify)</span>
+                            </div>
+                        </label>
+                    </div>
+                    <div id="techniques-specify-container" class="specify-input">
+                        <div class="specify-container">
+                            <label class="block text-xs font-semibold text-blue-800 mb-1">Please specify other search techniques:</label>
+                            <input type="text" name="search_techniques_specify" class="specify-field text-sm" placeholder="Enter other techniques..." oninput="updateProgress()">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Q23: Evaluation -->
+                <div class="question-card bg-white rounded-lg p-4 mb-4 shadow-sm border border-gray-100 conditional-oer-yes" style="display:none;">
+                    <h3 class="font-semibold text-gray-800 mb-3 flex items-center text-sm">
+                        <span class="bg-indigo-100 text-indigo-700 rounded-full w-6 h-6 flex items-center justify-center text-xs mr-2">23</span>
+                        How do you evaluate the relevance of the OER that you have searched for? (You may select more than one answer)
+                    </h3>
+                    <div class="grid grid-cols-1 gap-2 text-xs">
+                        <label class="cursor-pointer option-hover p-2 rounded-lg border-2 border-gray-200 transition-all">
+                            <input type="checkbox" name="evaluation" value="Citation check" class="hidden checkbox-custom" onchange="updateProgress()">
+                            <div>I check other works to see the extent to which the author has been cited</div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-2 rounded-lg border-2 border-gray-200 transition-all">
+                            <input type="checkbox" name="evaluation" value="Repository reputation" class="hidden checkbox-custom" onchange="updateProgress()">
+                            <div>I consider the reputation of the OER repository</div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-2 rounded-lg border-2 border-gray-200 transition-all">
+                            <input type="checkbox" name="evaluation" value="Topic appropriateness" class="hidden checkbox-custom" onchange="updateProgress()">
+                            <div>I consider the appropriateness of the topic related to my needs</div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-2 rounded-lg border-2 border-gray-200 transition-all">
+                            <input type="checkbox" name="evaluation" value="Accuracy" class="hidden checkbox-custom" onchange="updateProgress()">
+                            <div>I consider the accuracy of the OER repository</div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-2 rounded-lg border-2 border-gray-200 transition-all">
+                            <input type="checkbox" name="evaluation" value="Author qualifications" class="hidden checkbox-custom" onchange="updateProgress()">
+                            <div>I consider the qualifications of the author</div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-2 rounded-lg border-2 border-gray-200 transition-all">
+                            <input type="checkbox" name="evaluation" value="Peer review" class="hidden checkbox-custom" onchange="updateProgress()">
+                            <div>I consider peer review of OER</div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-2 rounded-lg border-2 border-gray-200 transition-all">
+                            <input type="checkbox" name="evaluation" value="Relevance" class="hidden checkbox-custom" onchange="updateProgress()">
+                            <div>I consider the relevance of OER to my needs</div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-2 rounded-lg border-2 border-gray-200 transition-all">
+                            <input type="checkbox" name="evaluation" value="Don't evaluate" class="hidden checkbox-custom" onchange="updateProgress()">
+                            <div>I don't evaluate the relevance of OER</div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-2 rounded-lg border-2 border-gray-200 transition-all">
+                            <input type="checkbox" name="evaluation" value="Others" class="hidden checkbox-custom" onchange="toggleSpecifyCheckbox(this, 'evaluation-specify-container')">
+                            <div class="flex items-center">
+                                <i class="fas fa-plus-circle text-indigo-500 mr-2"></i>
+                                <span>Other evaluation methods (Specify below)</span>
+                            </div>
+                        </label>
+                    </div>
+                    <div id="evaluation-specify-container" class="specify-input">
+                        <div class="specify-container">
+                            <label class="block text-xs font-semibold text-blue-800 mb-1">Please specify other evaluation methods:</label>
+                            <input type="text" name="evaluation_specify" class="specify-field text-sm" placeholder="Enter other methods..." oninput="updateProgress()">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Note for non-users -->
+                <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mb-4 conditional-oer-no" style="display:none;">
+                    <p class="text-xs text-yellow-800 text-center">
+                        <i class="fas fa-info-circle mr-1"></i>
+                        <strong>If you have never used OER, please continue with Question 24.</strong><br>
+                        If you have used OER, please skip to Question 26.
+                    </p>
+                </div>
+
+                <!-- Q24: Why Not Use OER (Conditional - No/DK only) -->
+                <div class="question-card bg-white rounded-lg p-4 mb-4 shadow-sm border border-gray-100 conditional-oer-no" style="display:none;">
+                    <h3 class="font-semibold text-gray-800 mb-3 flex items-center text-sm">
+                        <span class="bg-indigo-100 text-indigo-700 rounded-full w-6 h-6 flex items-center justify-center text-xs mr-2">24</span>
+                        Why don't you use Open Educational Resources (OER)?
+                    </h3>
+                    <textarea name="why_not_oer" class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-indigo-500 focus:outline-none text-sm" rows="4" placeholder="Please explain your reasons..." oninput="updateProgress()"></textarea>
+                </div>
+
+                <!-- Q25: Opinion on OER (Conditional - No/DK only) -->
+                <div class="question-card bg-white rounded-lg p-4 mb-4 shadow-sm border border-gray-100 conditional-oer-no" style="display:none;">
+                    <h3 class="font-semibold text-gray-800 mb-3 flex items-center text-sm">
+                        <span class="bg-indigo-100 text-indigo-700 rounded-full w-6 h-6 flex items-center justify-center text-xs mr-2">25</span>
+                        What is your opinion on utilizing Open Educational Resources (OER)?
+                    </h3>
+                    <div class="space-y-2 text-sm mb-3">
+                        <label class="cursor-pointer option-hover p-3 rounded-lg border-2 border-gray-200 transition-all block">
+                            <input type="radio" name="oer_opinion" value="Interested" class="hidden radio-custom" onchange="updateProgress()">
+                            <div class="flex items-center"><i class="fas fa-thumbs-up text-green-500 mr-2"></i><span class="font-medium">I am interested in using Open Educational Resources</span></div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-3 rounded-lg border-2 border-gray-200 transition-all block">
+                            <input type="radio" name="oer_opinion" value="Not interested" class="hidden radio-custom" onchange="updateProgress()">
+                            <div class="flex items-center"><i class="fas fa-thumbs-down text-red-500 mr-2"></i><span class="font-medium">I am not interested in using Open Educational Resources</span></div>
+                        </label>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-700 mb-1">Please provide reasons for your choice above:</label>
+                        <textarea name="opinion_reasons" class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-indigo-500 focus:outline-none text-sm" rows="3" placeholder="Explain your reasons..." oninput="updateProgress()"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION D: ATTITUDES TOWARDS OER -->
+            <div class="glass-panel rounded-2xl shadow-xl p-6 mb-6 section-hidden" id="section-d">
+                <div class="flex items-center mb-4 pb-3 border-b-2 border-indigo-100">
+                    <div class="w-10 h-10 rounded-full bg-indigo-600 text-white flex items-center justify-center text-lg font-bold mr-3">D</div>
+                    <div>
+                        <h2 class="text-xl font-bold text-gray-800">ATTITUDES TOWARDS OER UTILIZATION</h2>
+                        <p class="text-gray-600 text-xs">Perceptions and beliefs about OER effectiveness</p>
+                    </div>
+                </div>
+
+                <!-- Note for users -->
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4 conditional-oer-yes" style="display:none;">
+                    <p class="text-xs text-blue-800 text-center">
+                        <i class="fas fa-info-circle mr-1"></i>
+                        <strong>If you have used OER, please continue with Question 26.</strong><br>
+                        If you have never used OER, please skip to Question 29.
+                    </p>
+                </div>
+
+                <!-- Q26: Likert Scale Statements -->
+                <div class="question-card bg-white rounded-lg p-4 mb-4 shadow-sm border border-gray-100 conditional-oer-yes" style="display:none;">
+                    <h3 class="font-semibold text-gray-800 mb-4 flex items-center text-sm">
+                        <span class="bg-indigo-100 text-indigo-700 rounded-full w-6 h-6 flex items-center justify-center text-xs mr-2">26</span>
+                        How much do you agree with the following statements?
+                    </h3>
+                    
+                    <div class="space-y-4">
+                        <!-- Statement 1 -->
+                        <div class="bg-gray-50 p-3 rounded-lg">
+                            <p class="mb-2 text-xs font-medium text-gray-800">Using OERs helps meet the diverse needs of learners</p>
+                            <div class="likert-scale flex justify-between gap-1 text-xs">
+                                <div class="flex-1 text-center"><input type="radio" name="attitude_diverse" id="diverse_sa" value="Strongly Agree" class="hidden" onchange="updateProgress()"><label for="diverse_sa" class="block p-2 rounded cursor-pointer bg-white border border-gray-200 hover:bg-indigo-50">Strongly Agree</label></div>
+                                <div class="flex-1 text-center"><input type="radio" name="attitude_diverse" id="diverse_a" value="Agree" class="hidden" onchange="updateProgress()"><label for="diverse_a" class="block p-2 rounded cursor-pointer bg-white border border-gray-200 hover:bg-indigo-50">Agree</label></div>
+                                <div class="flex-1 text-center"><input type="radio" name="attitude_diverse" id="diverse_n" value="Neutral" class="hidden" onchange="updateProgress()"><label for="diverse_n" class="block p-2 rounded cursor-pointer bg-white border border-gray-200 hover:bg-indigo-50">Neutral</label></div>
+                                <div class="flex-1 text-center"><input type="radio" name="attitude_diverse" id="diverse_d" value="Disagree" class="hidden" onchange="updateProgress()"><label for="diverse_d" class="block p-2 rounded cursor-pointer bg-white border border-gray-200 hover:bg-indigo-50">Disagree</label></div>
+                                <div class="flex-1 text-center"><input type="radio" name="attitude_diverse" id="diverse_sd" value="Strongly Disagree" class="hidden" onchange="updateProgress()"><label for="diverse_sd" class="block p-2 rounded cursor-pointer bg-white border border-gray-200 hover:bg-indigo-50">Strongly Disagree</label></div>
+                            </div>
+                        </div>
+
+                        <!-- Statement 2 -->
+                        <div class="bg-gray-50 p-3 rounded-lg">
+                            <p class="mb-2 text-xs font-medium text-gray-800">Utilizing OER enhances the accessibility of high-quality learning materials</p>
+                            <div class="likert-scale flex justify-between gap-1 text-xs">
+                                <div class="flex-1 text-center"><input type="radio" name="attitude_accessibility" id="acc_sa" value="Strongly Agree" class="hidden" onchange="updateProgress()"><label for="acc_sa" class="block p-2 rounded cursor-pointer bg-white border border-gray-200 hover:bg-indigo-50">Strongly Agree</label></div>
+                                <div class="flex-1 text-center"><input type="radio" name="attitude_accessibility" id="acc_a" value="Agree" class="hidden" onchange="updateProgress()"><label for="acc_a" class="block p-2 rounded cursor-pointer bg-white border border-gray-200 hover:bg-indigo-50">Agree</label></div>
+                                <div class="flex-1 text-center"><input type="radio" name="attitude_accessibility" id="acc_n" value="Neutral" class="hidden" onchange="updateProgress()"><label for="acc_n" class="block p-2 rounded cursor-pointer bg-white border border-gray-200 hover:bg-indigo-50">Neutral</label></div>
+                                <div class="flex-1 text-center"><input type="radio" name="attitude_accessibility" id="acc_d" value="Disagree" class="hidden" onchange="updateProgress()"><label for="acc_d" class="block p-2 rounded cursor-pointer bg-white border border-gray-200 hover:bg-indigo-50">Disagree</label></div>
+                                <div class="flex-1 text-center"><input type="radio" name="attitude_accessibility" id="acc_sd" value="Strongly Disagree" class="hidden" onchange="updateProgress()"><label for="acc_sd" class="block p-2 rounded cursor-pointer bg-white border border-gray-200 hover:bg-indigo-50">Strongly Disagree</label></div>
+                            </div>
+                        </div>
+
+                        <!-- Statement 3 -->
+                        <div class="bg-gray-50 p-3 rounded-lg">
+                            <p class="mb-2 text-xs font-medium text-gray-800">The quality of open textbooks is comparable to, or superior to, that of commercial textbooks</p>
+                            <div class="likert-scale flex justify-between gap-1 text-xs">
+                                <div class="flex-1 text-center"><input type="radio" name="attitude_quality_compare" id="qc_sa" value="Strongly Agree" class="hidden" onchange="updateProgress()"><label for="qc_sa" class="block p-2 rounded cursor-pointer bg-white border border-gray-200 hover:bg-indigo-50">Strongly Agree</label></div>
+                                <div class="flex-1 text-center"><input type="radio" name="attitude_quality_compare" id="qc_a" value="Agree" class="hidden" onchange="updateProgress()"><label for="qc_a" class="block p-2 rounded cursor-pointer bg-white border border-gray-200 hover:bg-indigo-50">Agree</label></div>
+                                <div class="flex-1 text-center"><input type="radio" name="attitude_quality_compare" id="qc_n" value="Neutral" class="hidden" onchange="updateProgress()"><label for="qc_n" class="block p-2 rounded cursor-pointer bg-white border border-gray-200 hover:bg-indigo-50">Neutral</label></div>
+                                <div class="flex-1 text-center"><input type="radio" name="attitude_quality_compare" id="qc_d" value="Disagree" class="hidden" onchange="updateProgress()"><label for="qc_d" class="block p-2 rounded cursor-pointer bg-white border border-gray-200 hover:bg-indigo-50">Disagree</label></div>
+                                <div class="flex-1 text-center"><input type="radio" name="attitude_quality_compare" id="qc_sd" value="Strongly Disagree" class="hidden" onchange="updateProgress()"><label for="qc_sd" class="block p-2 rounded cursor-pointer bg-white border border-gray-200 hover:bg-indigo-50">Strongly Disagree</label></div>
+                            </div>
+                        </div>
+
+                        <!-- Statement 4 -->
+                        <div class="bg-gray-50 p-3 rounded-lg">
+                            <p class="mb-2 text-xs font-medium text-gray-800">OER materials are trustworthy</p>
+                            <div class="likert-scale flex justify-between gap-1 text-xs">
+                                <div class="flex-1 text-center"><input type="radio" name="attitude_trust" id="trust_sa" value="Strongly Agree" class="hidden" onchange="updateProgress()"><label for="trust_sa" class="block p-2 rounded cursor-pointer bg-white border border-gray-200 hover:bg-indigo-50">Strongly Agree</label></div>
+                                <div class="flex-1 text-center"><input type="radio" name="attitude_trust" id="trust_a" value="Agree" class="hidden" onchange="updateProgress()"><label for="trust_a" class="block p-2 rounded cursor-pointer bg-white border border-gray-200 hover:bg-indigo-50">Agree</label></div>
+                                <div class="flex-1 text-center"><input type="radio" name="attitude_trust" id="trust_n" value="Neutral" class="hidden" onchange="updateProgress()"><label for="trust_n" class="block p-2 rounded cursor-pointer bg-white border border-gray-200 hover:bg-indigo-50">Neutral</label></div>
+                                <div class="flex-1 text-center"><input type="radio" name="attitude_trust" id="trust_d" value="Disagree" class="hidden" onchange="updateProgress()"><label for="trust_d" class="block p-2 rounded cursor-pointer bg-white border border-gray-200 hover:bg-indigo-50">Disagree</label></div>
+                                <div class="flex-1 text-center"><input type="radio" name="attitude_trust" id="trust_sd" value="Strongly Disagree" class="hidden" onchange="updateProgress()"><label for="trust_sd" class="block p-2 rounded cursor-pointer bg-white border border-gray-200 hover:bg-indigo-50">Strongly Disagree</label></div>
+                            </div>
+                        </div>
+
+                        <!-- Statement 5 -->
+                        <div class="bg-gray-50 p-3 rounded-lg">
+                            <p class="mb-2 text-xs font-medium text-gray-800">The quality of open textbooks is the same as that of commercial textbooks</p>
+                            <div class="likert-scale flex justify-between gap-1 text-xs">
+                                <div class="flex-1 text-center"><input type="radio" name="attitude_quality_same" id="qs_sa" value="Strongly Agree" class="hidden" onchange="updateProgress()"><label for="qs_sa" class="block p-2 rounded cursor-pointer bg-white border border-gray-200 hover:bg-indigo-50">Strongly Agree</label></div>
+                                <div class="flex-1 text-center"><input type="radio" name="attitude_quality_same" id="qs_a" value="Agree" class="hidden" onchange="updateProgress()"><label for="qs_a" class="block p-2 rounded cursor-pointer bg-white border border-gray-200 hover:bg-indigo-50">Agree</label></div>
+                                <div class="flex-1 text-center"><input type="radio" name="attitude_quality_same" id="qs_n" value="Neutral" class="hidden" onchange="updateProgress()"><label for="qs_n" class="block p-2 rounded cursor-pointer bg-white border border-gray-200 hover:bg-indigo-50">Neutral</label></div>
+                                <div class="flex-1 text-center"><input type="radio" name="attitude_quality_same" id="qs_d" value="Disagree" class="hidden" onchange="updateProgress()"><label for="qs_d" class="block p-2 rounded cursor-pointer bg-white border border-gray-200 hover:bg-indigo-50">Disagree</label></div>
+                                <div class="flex-1 text-center"><input type="radio" name="attitude_quality_same" id="qs_sd" value="Strongly Disagree" class="hidden" onchange="updateProgress()"><label for="qs_sd" class="block p-2 rounded cursor-pointer bg-white border border-gray-200 hover:bg-indigo-50">Strongly Disagree</label></div>
+                            </div>
+                        </div>
+
+                        <!-- Statement 6 -->
+                        <div class="bg-gray-50 p-3 rounded-lg">
+                            <p class="mb-2 text-xs font-medium text-gray-800">The quality of OER is lower compared to commercial learning materials</p>
+                            <div class="likert-scale flex justify-between gap-1 text-xs">
+                                <div class="flex-1 text-center"><input type="radio" name="attitude_quality_lower" id="ql_sa" value="Strongly Agree" class="hidden" onchange="updateProgress()"><label for="ql_sa" class="block p-2 rounded cursor-pointer bg-white border border-gray-200 hover:bg-indigo-50">Strongly Agree</label></div>
+                                <div class="flex-1 text-center"><input type="radio" name="attitude_quality_lower" id="ql_a" value="Agree" class="hidden" onchange="updateProgress()"><label for="ql_a" class="block p-2 rounded cursor-pointer bg-white border border-gray-200 hover:bg-indigo-50">Agree</label></div>
+                                <div class="flex-1 text-center"><input type="radio" name="attitude_quality_lower" id="ql_n" value="Neutral" class="hidden" onchange="updateProgress()"><label for="ql_n" class="block p-2 rounded cursor-pointer bg-white border border-gray-200 hover:bg-indigo-50">Neutral</label></div>
+                                <div class="flex-1 text-center"><input type="radio" name="attitude_quality_lower" id="ql_d" value="Disagree" class="hidden" onchange="updateProgress()"><label for="ql_d" class="block p-2 rounded cursor-pointer bg-white border border-gray-200 hover:bg-indigo-50">Disagree</label></div>
+                                <div class="flex-1 text-center"><input type="radio" name="attitude_quality_lower" id="ql_sd" value="Strongly Disagree" class="hidden" onchange="updateProgress()"><label for="ql_sd" class="block p-2 rounded cursor-pointer bg-white border border-gray-200 hover:bg-indigo-50">Strongly Disagree</label></div>
+                            </div>
+                        </div>
+
+                        <!-- Statement 7 -->
+                        <div class="bg-gray-50 p-3 rounded-lg">
+                            <p class="mb-2 text-xs font-medium text-gray-800">Utilizing OER improves students' grades</p>
+                            <div class="likert-scale flex justify-between gap-1 text-xs">
+                                <div class="flex-1 text-center"><input type="radio" name="attitude_grades" id="grade_sa" value="Strongly Agree" class="hidden" onchange="updateProgress()"><label for="grade_sa" class="block p-2 rounded cursor-pointer bg-white border border-gray-200 hover:bg-indigo-50">Strongly Agree</label></div>
+                                <div class="flex-1 text-center"><input type="radio" name="attitude_grades" id="grade_a" value="Agree" class="hidden" onchange="updateProgress()"><label for="grade_a" class="block p-2 rounded cursor-pointer bg-white border border-gray-200 hover:bg-indigo-50">Agree</label></div>
+                                <div class="flex-1 text-center"><input type="radio" name="attitude_grades" id="grade_n" value="Neutral" class="hidden" onchange="updateProgress()"><label for="grade_n" class="block p-2 rounded cursor-pointer bg-white border border-gray-200 hover:bg-indigo-50">Neutral</label></div>
+                                <div class="flex-1 text-center"><input type="radio" name="attitude_grades" id="grade_d" value="Disagree" class="hidden" onchange="updateProgress()"><label for="grade_d" class="block p-2 rounded cursor-pointer bg-white border border-gray-200 hover:bg-indigo-50">Disagree</label></div>
+                                <div class="flex-1 text-center"><input type="radio" name="attitude_grades" id="grade_sd" value="Strongly Disagree" class="hidden" onchange="updateProgress()"><label for="grade_sd" class="block p-2 rounded cursor-pointer bg-white border border-gray-200 hover:bg-indigo-50">Strongly Disagree</label></div>
+                            </div>
+                        </div>
+
+                        <!-- Statement 8 -->
+                        <div class="bg-gray-50 p-3 rounded-lg">
+                            <p class="mb-2 text-xs font-medium text-gray-800">Students who used OER performed better than those who used commercial learning materials</p>
+                            <div class="likert-scale flex justify-between gap-1 text-xs">
+                                <div class="flex-1 text-center"><input type="radio" name="attitude_performed_better" id="pb_sa" value="Strongly Agree" class="hidden" onchange="updateProgress()"><label for="pb_sa" class="block p-2 rounded cursor-pointer bg-white border border-gray-200 hover:bg-indigo-50">Strongly Agree</label></div>
+                                <div class="flex-1 text-center"><input type="radio" name="attitude_performed_better" id="pb_a" value="Agree" class="hidden" onchange="updateProgress()"><label for="pb_a" class="block p-2 rounded cursor-pointer bg-white border border-gray-200 hover:bg-indigo-50">Agree</label></div>
+                                <div class="flex-1 text-center"><input type="radio" name="attitude_performed_better" id="pb_n" value="Neutral" class="hidden" onchange="updateProgress()"><label for="pb_n" class="block p-2 rounded cursor-pointer bg-white border border-gray-200 hover:bg-indigo-50">Neutral</label></div>
+                                <div class="flex-1 text-center"><input type="radio" name="attitude_performed_better" id="pb_d" value="Disagree" class="hidden" onchange="updateProgress()"><label for="pb_d" class="block p-2 rounded cursor-pointer bg-white border border-gray-200 hover:bg-indigo-50">Disagree</label></div>
+                                <div class="flex-1 text-center"><input type="radio" name="attitude_performed_better" id="pb_sd" value="Strongly Disagree" class="hidden" onchange="updateProgress()"><label for="pb_sd" class="block p-2 rounded cursor-pointer bg-white border border-gray-200 hover:bg-indigo-50">Strongly Disagree</label></div>
+                            </div>
+                        </div>
+
+                        <!-- Statement 9 -->
+                        <div class="bg-gray-50 p-3 rounded-lg">
+                            <p class="mb-2 text-xs font-medium text-gray-800">The use of OER improves students' learning outcomes</p>
+                            <div class="likert-scale flex justify-between gap-1 text-xs">
+                                <div class="flex-1 text-center"><input type="radio" name="attitude_outcomes" id="out_sa" value="Strongly Agree" class="hidden" onchange="updateProgress()"><label for="out_sa" class="block p-2 rounded cursor-pointer bg-white border border-gray-200 hover:bg-indigo-50">Strongly Agree</label></div>
+                                <div class="flex-1 text-center"><input type="radio" name="attitude_outcomes" id="out_a" value="Agree" class="hidden" onchange="updateProgress()"><label for="out_a" class="block p-2 rounded cursor-pointer bg-white border border-gray-200 hover:bg-indigo-50">Agree</label></div>
+                                <div class="flex-1 text-center"><input type="radio" name="attitude_outcomes" id="out_n" value="Neutral" class="hidden" onchange="updateProgress()"><label for="out_n" class="block p-2 rounded cursor-pointer bg-white border border-gray-200 hover:bg-indigo-50">Neutral</label></div>
+                                <div class="flex-1 text-center"><input type="radio" name="attitude_outcomes" id="out_d" value="Disagree" class="hidden" onchange="updateProgress()"><label for="out_d" class="block p-2 rounded cursor-pointer bg-white border border-gray-200 hover:bg-indigo-50">Disagree</label></div>
+                                <div class="flex-1 text-center"><input type="radio" name="attitude_outcomes" id="out_sd" value="Strongly Disagree" class="hidden" onchange="updateProgress()"><label for="out_sd" class="block p-2 rounded cursor-pointer bg-white border border-gray-200 hover:bg-indigo-50">Strongly Disagree</label></div>
+                            </div>
+                        </div>
+
+                        <!-- Statement 10 -->
+                        <div class="bg-gray-50 p-3 rounded-lg">
+                            <p class="mb-2 text-xs font-medium text-gray-800">OER are more effective than commercial learning materials in improving student learning outcomes</p>
+                            <div class="likert-scale flex justify-between gap-1 text-xs">
+                                <div class="flex-1 text-center"><input type="radio" name="attitude_effective" id="eff_sa" value="Strongly Agree" class="hidden" onchange="updateProgress()"><label for="eff_sa" class="block p-2 rounded cursor-pointer bg-white border border-gray-200 hover:bg-indigo-50">Strongly Agree</label></div>
+                                <div class="flex-1 text-center"><input type="radio" name="attitude_effective" id="eff_a" value="Agree" class="hidden" onchange="updateProgress()"><label for="eff_a" class="block p-2 rounded cursor-pointer bg-white border border-gray-200 hover:bg-indigo-50">Agree</label></div>
+                                <div class="flex-1 text-center"><input type="radio" name="attitude_effective" id="eff_n" value="Neutral" class="hidden" onchange="updateProgress()"><label for="eff_n" class="block p-2 rounded cursor-pointer bg-white border border-gray-200 hover:bg-indigo-50">Neutral</label></div>
+                                <div class="flex-1 text-center"><input type="radio" name="attitude_effective" id="eff_d" value="Disagree" class="hidden" onchange="updateProgress()"><label for="eff_d" class="block p-2 rounded cursor-pointer bg-white border border-gray-200 hover:bg-indigo-50">Disagree</label></div>
+                                <div class="flex-1 text-center"><input type="radio" name="attitude_effective" id="eff_sd" value="Strongly Disagree" class="hidden" onchange="updateProgress()"><label for="eff_sd" class="block p-2 rounded cursor-pointer bg-white border border-gray-200 hover:bg-indigo-50">Strongly Disagree</label></div>
+                            </div>
+                        </div>
+
+                        <!-- Statement 11 -->
+                        <div class="bg-gray-50 p-3 rounded-lg">
+                            <p class="mb-2 text-xs font-medium text-gray-800">Utilizing OER improve students' retention</p>
+                            <div class="likert-scale flex justify-between gap-1 text-xs">
+                                <div class="flex-1 text-center"><input type="radio" name="attitude_retention" id="ret_sa" value="Strongly Agree" class="hidden" onchange="updateProgress()"><label for="ret_sa" class="block p-2 rounded cursor-pointer bg-white border border-gray-200 hover:bg-indigo-50">Strongly Agree</label></div>
+                                <div class="flex-1 text-center"><input type="radio" name="attitude_retention" id="ret_a" value="Agree" class="hidden" onchange="updateProgress()"><label for="ret_a" class="block p-2 rounded cursor-pointer bg-white border border-gray-200 hover:bg-indigo-50">Agree</label></div>
+                                <div class="flex-1 text-center"><input type="radio" name="attitude_retention" id="ret_n" value="Neutral" class="hidden" onchange="updateProgress()"><label for="ret_n" class="block p-2 rounded cursor-pointer bg-white border border-gray-200 hover:bg-indigo-50">Neutral</label></div>
+                                <div class="flex-1 text-center"><input type="radio" name="attitude_retention" id="ret_d" value="Disagree" class="hidden" onchange="updateProgress()"><label for="ret_d" class="block p-2 rounded cursor-pointer bg-white border border-gray-200 hover:bg-indigo-50">Disagree</label></div>
+                                <div class="flex-1 text-center"><input type="radio" name="attitude_retention" id="ret_sd" value="Strongly Disagree" class="hidden" onchange="updateProgress()"><label for="ret_sd" class="block p-2 rounded cursor-pointer bg-white border border-gray-200 hover:bg-indigo-50">Strongly Disagree</label></div>
+                            </div>
+                        </div>
+
+                        <!-- Statement 12 -->
+                        <div class="bg-gray-50 p-3 rounded-lg">
+                            <p class="mb-2 text-xs font-medium text-gray-800">Using OER reduces the cost of education for students</p>
+                            <div class="likert-scale flex justify-between gap-1 text-xs">
+                                <div class="flex-1 text-center"><input type="radio" name="attitude_cost" id="cost_sa" value="Strongly Agree" class="hidden" onchange="updateProgress()"><label for="cost_sa" class="block p-2 rounded cursor-pointer bg-white border border-gray-200 hover:bg-indigo-50">Strongly Agree</label></div>
+                                <div class="flex-1 text-center"><input type="radio" name="attitude_cost" id="cost_a" value="Agree" class="hidden" onchange="updateProgress()"><label for="cost_a" class="block p-2 rounded cursor-pointer bg-white border border-gray-200 hover:bg-indigo-50">Agree</label></div>
+                                <div class="flex-1 text-center"><input type="radio" name="attitude_cost" id="cost_n" value="Neutral" class="hidden" onchange="updateProgress()"><label for="cost_n" class="block p-2 rounded cursor-pointer bg-white border border-gray-200 hover:bg-indigo-50">Neutral</label></div>
+                                <div class="flex-1 text-center"><input type="radio" name="attitude_cost" id="cost_d" value="Disagree" class="hidden" onchange="updateProgress()"><label for="cost_d" class="block p-2 rounded cursor-pointer bg-white border border-gray-200 hover:bg-indigo-50">Disagree</label></div>
+                                <div class="flex-1 text-center"><input type="radio" name="attitude_cost" id="cost_sd" value="Strongly Disagree" class="hidden" onchange="updateProgress()"><label for="cost_sd" class="block p-2 rounded cursor-pointer bg-white border border-gray-200 hover:bg-indigo-50">Strongly Disagree</label></div>
+                            </div>
+                        </div>
+
+                        <!-- Statement 13 -->
+                        <div class="bg-gray-50 p-3 rounded-lg">
+                            <p class="mb-2 text-xs font-medium text-gray-800">Students can browse OER in the repository with minimal effort</p>
+                            <div class="likert-scale flex justify-between gap-1 text-xs">
+                                <div class="flex-1 text-center"><input type="radio" name="attitude_browse" id="browse_sa" value="Strongly Agree" class="hidden" onchange="updateProgress()"><label for="browse_sa" class="block p-2 rounded cursor-pointer bg-white border border-gray-200 hover:bg-indigo-50">Strongly Agree</label></div>
+                                <div class="flex-1 text-center"><input type="radio" name="attitude_browse" id="browse_a" value="Agree" class="hidden" onchange="updateProgress()"><label for="browse_a" class="block p-2 rounded cursor-pointer bg-white border border-gray-200 hover:bg-indigo-50">Agree</label></div>
+                                <div class="flex-1 text-center"><input type="radio" name="attitude_browse" id="browse_n" value="Neutral" class="hidden" onchange="updateProgress()"><label for="browse_n" class="block p-2 rounded cursor-pointer bg-white border border-gray-200 hover:bg-indigo-50">Neutral</label></div>
+                                <div class="flex-1 text-center"><input type="radio" name="attitude_browse" id="browse_d" value="Disagree" class="hidden" onchange="updateProgress()"><label for="browse_d" class="block p-2 rounded cursor-pointer bg-white border border-gray-200 hover:bg-indigo-50">Disagree</label></div>
+                                <div class="flex-1 text-center"><input type="radio" name="attitude_browse" id="browse_sd" value="Strongly Disagree" class="hidden" onchange="updateProgress()"><label for="browse_sd" class="block p-2 rounded cursor-pointer bg-white border border-gray-200 hover:bg-indigo-50">Strongly Disagree</label></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Q27: Ability to Find OER -->
+                <div class="question-card bg-white rounded-lg p-4 mb-4 shadow-sm border border-gray-100 conditional-oer-yes" style="display:none;">
+                    <h3 class="font-semibold text-gray-800 mb-3 flex items-center text-sm">
+                        <span class="bg-indigo-100 text-indigo-700 rounded-full w-6 h-6 flex items-center justify-center text-xs mr-2">27</span>
+                        How would you rate your overall ability to find relevant OER in the OER repositories?
+                    </h3>
+                    <div class="space-y-2 text-sm">
+                        <label class="cursor-pointer option-hover p-3 rounded-lg border-2 border-gray-200 transition-all block">
+                            <input type="radio" name="find_ability" value="Extremely easy" class="hidden radio-custom" onchange="updateProgress(); toggleSpecifyField('ability-specify-container', false)">
+                            <div class="flex items-center"><i class="fas fa-smile-beam text-green-500 text-xl mr-3"></i><div><span class="font-medium block">Extremely easy</span><span class="text-xs text-gray-500">I can find what I need immediately</span></div></div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-3 rounded-lg border-2 border-gray-200 transition-all block">
+                            <input type="radio" name="find_ability" value="Easy" class="hidden radio-custom" onchange="updateProgress(); toggleSpecifyField('ability-specify-container', false)">
+                            <div class="flex items-center"><i class="fas fa-smile text-green-400 text-xl mr-3"></i><div><span class="font-medium block">Easy</span><span class="text-xs text-gray-500">I can usually find what I need with little effort</span></div></div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-3 rounded-lg border-2 border-gray-200 transition-all block">
+                            <input type="radio" name="find_ability" value="Neither easy nor difficult" class="hidden radio-custom" onchange="updateProgress(); toggleSpecifyField('ability-specify-container', false)">
+                            <div class="flex items-center"><i class="fas fa-meh text-yellow-500 text-xl mr-3"></i><div><span class="font-medium block">Neither easy nor difficult</span><span class="text-xs text-gray-500">Sometimes I find what I need, sometimes not</span></div></div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-3 rounded-lg border-2 border-gray-200 transition-all block">
+                            <input type="radio" name="find_ability" value="Difficult" class="hidden radio-custom" onchange="updateProgress(); toggleSpecifyField('ability-specify-container', false)">
+                            <div class="flex items-center"><i class="fas fa-frown text-orange-500 text-xl mr-3"></i><div><span class="font-medium block">Difficult</span><span class="text-xs text-gray-500">I often struggle to find relevant resources</span></div></div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-3 rounded-lg border-2 border-gray-200 transition-all block">
+                            <input type="radio" name="find_ability" value="Others" class="hidden radio-custom" onchange="updateProgress(); toggleSpecifyField('ability-specify-container', true)">
+                            <div class="flex items-center">
+                                <i class="fas fa-plus-circle text-indigo-500 text-xl mr-3"></i>
+                                <span class="font-medium">Other (Please specify below)</span>
+                            </div>
+                        </label>
+                    </div>
+                    <div id="ability-specify-container" class="specify-input">
+                        <div class="specify-container">
+                            <label class="block text-xs font-semibold text-blue-800 mb-1">Please specify:</label>
+                            <input type="text" name="find_ability_specify" class="specify-field text-sm" placeholder="Describe your experience..." oninput="updateProgress()">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION E: CHALLENGES -->
+            <div class="glass-panel rounded-2xl shadow-xl p-6 mb-6 section-hidden" id="section-e">
+                <div class="flex items-center mb-4 pb-3 border-b-2 border-indigo-100">
+                    <div class="w-10 h-10 rounded-full bg-indigo-600 text-white flex items-center justify-center text-lg font-bold mr-3">E</div>
+                    <div>
+                        <h2 class="text-xl font-bold text-gray-800">CHALLENGES FACED IN UTILIZING OER</h2>
+                        <p class="text-gray-600 text-xs">Barriers and obstacles encountered</p>
+                    </div>
+                </div>
+
+                <!-- Q28: Problems -->
+                <div class="question-card bg-white rounded-lg p-4 mb-4 shadow-sm border border-gray-100">
+                    <h3 class="font-semibold text-gray-800 mb-3 flex items-center text-sm">
+                        <span class="bg-indigo-100 text-indigo-700 rounded-full w-6 h-6 flex items-center justify-center text-xs mr-2">28</span>
+                        What problems do you encounter when using Open Educational Resources (OER)? (You may tick more than one answer)
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
+                        <label class="cursor-pointer option-hover p-2 rounded-lg border-2 border-gray-200 transition-all">
+                            <input type="checkbox" name="challenges" value="Power outage" class="hidden checkbox-custom" onchange="updateProgress()">
+                            <div class="flex items-center"><i class="fas fa-plug mr-2 text-red-500"></i><span>Recurrent power outage</span></div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-2 rounded-lg border-2 border-gray-200 transition-all">
+                            <input type="checkbox" name="challenges" value="Searching skills" class="hidden checkbox-custom" onchange="updateProgress()">
+                            <div class="flex items-center"><i class="fas fa-search mr-2 text-blue-500"></i><span>Inadequate searching skills</span></div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-2 rounded-lg border-2 border-gray-200 transition-all">
+                            <input type="checkbox" name="challenges" value="Low bandwidth" class="hidden checkbox-custom" onchange="updateProgress()">
+                            <div class="flex items-center"><i class="fas fa-tachometer-alt mr-2 text-yellow-500"></i><span>Low bandwidth</span></div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-2 rounded-lg border-2 border-gray-200 transition-all">
+                            <input type="checkbox" name="challenges" value="Printout costs" class="hidden checkbox-custom" onchange="updateProgress()">
+                            <div class="flex items-center"><i class="fas fa-print mr-2 text-gray-500"></i><span>High cost of printouts</span></div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-2 rounded-lg border-2 border-gray-200 transition-all">
+                            <input type="checkbox" name="challenges" value="Internet costs" class="hidden checkbox-custom" onchange="updateProgress()">
+                            <div class="flex items-center"><i class="fas fa-dollar-sign mr-2 text-green-500"></i><span>High cost of internet connectivity</span></div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-2 rounded-lg border-2 border-gray-200 transition-all">
+                            <input type="checkbox" name="challenges" value="Poor quality" class="hidden checkbox-custom" onchange="updateProgress()">
+                            <div class="flex items-center"><i class="fas fa-thumbs-down mr-2 text-red-400"></i><span>OER of poor quality</span></div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-2 rounded-lg border-2 border-gray-200 transition-all">
+                            <input type="checkbox" name="challenges" value="Limited computer access" class="hidden checkbox-custom" onchange="updateProgress()">
+                            <div class="flex items-center"><i class="fas fa-desktop mr-2 text-gray-600"></i><span>Limited access to computer terminal</span></div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-2 rounded-lg border-2 border-gray-200 transition-all">
+                            <input type="checkbox" name="challenges" value="No catalog" class="hidden checkbox-custom" onchange="updateProgress()">
+                            <div class="flex items-center"><i class="fas fa-list mr-2 text-purple-500"></i><span>No comprehensive catalog of resources</span></div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-2 rounded-lg border-2 border-gray-200 transition-all">
+                            <input type="checkbox" name="challenges" value="Not high-quality" class="hidden checkbox-custom" onchange="updateProgress()">
+                            <div class="flex items-center"><i class="fas fa-exclamation-triangle mr-2 text-orange-500"></i><span>Not high-quality</span></div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-2 rounded-lg border-2 border-gray-200 transition-all">
+                            <input type="checkbox" name="challenges" value="Not up-to-date" class="hidden checkbox-custom" onchange="updateProgress()">
+                            <div class="flex items-center"><i class="fas fa-calendar-times mr-2 text-orange-500"></i><span>OER are not up-to-date</span></div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-2 rounded-lg border-2 border-gray-200 transition-all">
+                            <input type="checkbox" name="challenges" value="Language barrier" class="hidden checkbox-custom" onchange="updateProgress()">
+                            <div class="flex items-center"><i class="fas fa-language mr-2 text-blue-400"></i><span>Language barrier</span></div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-2 rounded-lg border-2 border-gray-200 transition-all">
+                            <input type="checkbox" name="challenges" value="Copyright understanding" class="hidden checkbox-custom" onchange="updateProgress()">
+                            <div class="flex items-center"><i class="fas fa-copyright mr-2 text-red-600"></i><span>Limited understanding of copyright</span></div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-2 rounded-lg border-2 border-gray-200 transition-all">
+                            <input type="checkbox" name="challenges" value="License understanding" class="hidden checkbox-custom" onchange="updateProgress()">
+                            <div class="flex items-center"><i class="fas fa-key mr-2 text-yellow-600"></i><span>Limited understanding open license</span></div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-2 rounded-lg border-2 border-gray-200 transition-all">
+                            <input type="checkbox" name="challenges" value="Not used by faculty" class="hidden checkbox-custom" onchange="updateProgress()">
+                            <div class="flex items-center"><i class="fas fa-chalkboard-teacher mr-2 text-gray-500"></i><span>Not used by other faculty members I know</span></div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-2 rounded-lg border-2 border-gray-200 transition-all">
+                            <input type="checkbox" name="challenges" value="Limited subject resources" class="hidden checkbox-custom" onchange="updateProgress()">
+                            <div class="flex items-center"><i class="fas fa-book-dead mr-2 text-gray-400"></i><span>Not enough resources for my subject</span></div>
+                        </label>
+                        <label class="cursor-pointer option-hover p-2 rounded-lg border-2 border-gray-200 transition-all md:col-span-2">
+                            <input type="checkbox" name="challenges" value="Others" class="hidden checkbox-custom" onchange="toggleSpecifyCheckbox(this, 'challenges-specify-container')">
+                            <div class="flex items-center">
+                                <i class="fas fa-plus-circle text-indigo-500 mr-2"></i>
+                                <span>Other challenges (Please specify below)</span>
+                            </div>
+                        </label>
+                    </div>
+                    <div id="challenges-specify-container" class="specify-input">
+                        <div class="specify-container">
+                            <label class="block text-xs font-semibold text-blue-800 mb-1">Please specify other challenges:</label>
+                            <textarea name="challenges_specify" class="specify-field text-sm" rows="2" placeholder="Describe other challenges you face..." oninput="updateProgress()"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION F: RECOMMENDATIONS -->
+            <div class="glass-panel rounded-2xl shadow-xl p-6 mb-6 section-hidden" id="section-f">
+                <div class="flex items-center mb-4 pb-3 border-b-2 border-indigo-100">
+                    <div class="w-10 h-10 rounded-full bg-indigo-600 text-white flex items-center justify-center text-lg font-bold mr-3">F</div>
+                    <div>
+                        <h2 class="text-xl font-bold text-gray-800">FRAMEWORK RECOMMENDATIONS</h2>
+                        <p class="text-gray-600 text-xs">Your suggestions for improvement</p>
+                    </div>
+                </div>
+
+                <div class="bg-green-50 border-l-4 border-green-500 p-3 mb-4 rounded-r">
+                    <p class="text-xs text-green-800">
+                        <i class="fas fa-info-circle mr-1"></i>
+                        <strong>All respondents should continue with Question 29.</strong>
+                    </p>
+                </div>
+
+                <!-- Q29: Recommendations -->
+                <div class="question-card bg-white rounded-lg p-4 mb-4 shadow-sm border border-gray-100">
+                    <h3 class="font-semibold text-gray-800 mb-3 flex items-center text-sm">
+                        <span class="bg-indigo-100 text-indigo-700 rounded-full w-6 h-6 flex items-center justify-center text-xs mr-2">29</span>
+                        In your opinion, what should be done to make OER more effectively utilized to support teaching and learning for undergraduate distance students at OUT?
+                    </h3>
+                    <div class="bg-yellow-50 border-l-4 border-yellow-400 p-3 mb-3 rounded-r">
+                        <p class="text-xs text-yellow-800">
+                            <i class="fas fa-lightbulb mr-1"></i>
+                            Please provide detailed suggestions. Your input is valuable for improving OER implementation.
+                        </p>
+                    </div>
+                    <textarea name="recommendations" class="w-full p-4 border-2 border-gray-200 rounded-lg focus:border-indigo-500 focus:outline-none text-sm" rows="8" placeholder="Share your recommendations here..." oninput="updateProgress()"></textarea>
+                </div>
+
+                <!-- Thank You Message -->
+                <div class="text-center p-6 bg-indigo-50 rounded-lg">
+                    <h4 class="text-lg font-bold text-indigo-800 mb-2">Thank You Very Much for Your Cooperation!</h4>
+                    <p class="text-sm text-indigo-600">Your participation is greatly appreciated.</p>
+                </div>
+            </div>
+
+            <!-- Submit Section -->
+            <div class="glass-panel rounded-2xl shadow-xl p-6 text-center section-hidden" id="submit-section">
+                <div class="mb-4">
+                    <i class="fas fa-check-circle text-5xl text-green-500 mb-3"></i>
+                    <h2 class="text-xl font-bold text-gray-800 mb-2">Ready to Submit!</h2>
+                    <p class="text-gray-600 text-sm">You have reached the end of the questionnaire.</p>
+                </div>
+                
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4 text-left max-w-xl mx-auto text-xs">
+                    <h4 class="font-semibold text-blue-800 mb-2">Before submitting:</h4>
+                    <ul class="text-blue-700 space-y-1">
+                        <li><i class="fas fa-check mr-1"></i>Review your answers</li>
+                        <li><i class="fas fa-check mr-1"></i>Ensure all required fields are completed</li>
+                        <li><i class="fas fa-check mr-1"></i>Your responses will be kept confidential</li>
+                        <li><i class="fas fa-check mr-1"></i>You can only submit once per device</li>
+                    </ul>
+                </div>
+
+                <button type="submit" id="submit-btn" class="bg-indigo-600 text-white px-8 py-3 rounded-full font-bold text-base hover:bg-indigo-700 transition-all transform hover:scale-105 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none">
+                    <i class="fas fa-paper-plane mr-2"></i>Submit Questionnaire
+                </button>
+                
+                <p class="mt-3 text-xs text-gray-500">
+                    <i class="fas fa-lock mr-1"></i> Secure submission • Data encrypted
+                </p>
+            </div>
+
+        </form>
+
+        <!-- Thank You Message (Hidden initially) -->
+        <div id="thank-you" class="hidden glass-panel rounded-2xl shadow-2xl p-8 text-center max-w-2xl mx-auto">
+            <div class="mb-4">
+                <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <i class="fas fa-check text-4xl text-green-500"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-gray-800 mb-2">Submission Successful!</h2>
+                <p class="text-gray-600 text-sm mb-4">
+                    Thank you for participating in this research study. Your responses have been recorded successfully.
+                </p>
+                <div class="bg-gray-50 rounded-lg p-4 text-left mb-4">
+                    <p class="text-xs text-gray-600 mb-1"><strong>Reference ID:</strong> <span id="ref-id" class="font-mono text-indigo-600"></span></p>
+                    <p class="text-xs text-gray-600">Please save this reference number for your records.</p>
+                </div>
+                <div class="flex justify-center gap-3">
+                    <button onclick="exportResponse()" class="px-4 py-2 bg-indigo-100 text-indigo-700 rounded-lg hover:bg-indigo-200 transition-all text-sm">
+                        <i class="fas fa-download mr-2"></i>Download Response
+                    </button>
+                    <button onclick="location.reload()" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-all text-sm">
+                        <i class="fas fa-redo mr-2"></i>Submit Another Response
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Check if already submitted on page load
+        window.addEventListener('load', function() {
+            checkSubmissionStatus();
+        });
+
+        // Check submission status
+        function checkSubmissionStatus() {
+            const submitted = localStorage.getItem('oer_questionnaire_submitted');
+            if (submitted) {
+                try {
+                    const data = JSON.parse(submitted);
+                    document.getElementById('submitted-ref-id').textContent = data.refId || 'N/A';
+                    document.getElementById('submitted-date').textContent = new Date(data.timestamp).toLocaleString();
+                    document.getElementById('already-submitted-warning').classList.remove('hidden');
+                    document.getElementById('questionnaire-form').style.display = 'none';
+                    document.getElementById('submit-section').style.display = 'none';
+                    document.querySelector('.sticky-nav').style.display = 'none';
+                    document.getElementById('intro').style.display = 'none';
+                    return true;
+                } catch (e) {
+                    localStorage.removeItem('oer_questionnaire_submitted');
+                    return false;
+                }
+            }
+            return false;
+        }
+
+        // Reset submission (for admin/testing purposes)
+        function resetSubmission() {
+            if (confirm('Are you sure you want to clear the submission record? This will allow a new submission from this device.')) {
+                localStorage.removeItem('oer_questionnaire_submitted');
+                location.reload();
+            }
+        }
+
+        // Handle StaticForms submission
+        function handleStaticFormsSubmit(event) {
+            // Prevent default to handle validation first
+            event.preventDefault();
+
+            // STRICT one submission enforcement - check before anything else
+            const submittedData = localStorage.getItem('oer_questionnaire_submitted');
+            if (submittedData) {
+                try {
+                    const data = JSON.parse(submittedData);
+                    alert('You have already submitted this questionnaire on ' + new Date(data.timestamp).toLocaleString() + '. Each participant is allowed to submit only once.');
+                    document.getElementById('already-submitted-warning').classList.remove('hidden');
+                    document.getElementById('submitted-ref-id').textContent = data.refId || 'N/A';
+                    document.getElementById('submitted-date').textContent = new Date(data.timestamp).toLocaleString();
+                    document.getElementById('questionnaire-form').style.display = 'none';
+                    document.querySelector('.sticky-nav').style.display = 'none';
+                    document.getElementById('intro').style.display = 'none';
+                    document.getElementById('submit-section').style.display = 'none';
+                    return false;
+                } catch (e) {
+                    // If data is corrupted, clear it
+                    localStorage.removeItem('oer_questionnaire_submitted');
+                }
+            }
+
+            // Validate form
+            if (!validateForm()) {
+                alert('Please complete all required fields (marked with *) before submitting.');
+                const firstError = document.querySelector('.error-message.show');
+                if (firstError) {
+                    firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+                return false;
+            }
+
+            // Show loading state
+            const submitBtn = document.getElementById('submit-btn');
+            if (!submitBtn) return false;
+
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner spinner mr-2"></i>Submitting...';
+            submitBtn.classList.add('loading');
+            submitBtn.disabled = true;
+
+            // Generate submission data
+            const refId = 'OER-' + Date.now() + '-' + Math.random().toString(36).substr(2, 5).toUpperCase();
+            document.getElementById('submission-id').value = refId;
+            document.getElementById('submission-timestamp').value = new Date().toISOString();
+
+            // Store submission record IMMEDIATELY (before actual submit) to prevent double-click
+            const submissionRecord = {
+                refId: refId,
+                timestamp: new Date().toISOString(),
+                userAgent: navigator.userAgent
+            };
+            localStorage.setItem('oer_questionnaire_submitted', JSON.stringify(submissionRecord));
+
+            // Store final response for download
+            const formData = collectFormData();
+            localStorage.setItem('oer_final_response_' + refId, JSON.stringify(formData));
+
+            // Show success message after short delay, then actually submit
+            setTimeout(() => {
+                document.getElementById('ref-id').textContent = refId;
+                document.getElementById('questionnaire-form').style.display = 'none';
+                document.getElementById('submit-section').style.display = 'none';
+                document.querySelector('.sticky-nav').style.display = 'none';
+                document.getElementById('thank-you').classList.remove('hidden');
+
+                // Clear draft
+                localStorage.removeItem('oer_questionnaire_draft');
+
+                // Scroll to top
+                window.scrollTo(0, 0);
+
+                // Actually submit the form to StaticForms
+                document.getElementById('questionnaire-form').submit();
+            }, 1500);
+
+            return false;
+        }
+
+function checkConsent() {
+            const consent = document.getElementById('consent-check').checked;
+            const sections = document.querySelectorAll('.section-hidden');
+            const errorMsg = document.getElementById('consent-error');
+            
+            if (consent) {
+                sections.forEach(section => {
+                    section.classList.remove('section-hidden');
+                    section.classList.add('fade-in');
+                });
+                errorMsg.classList.remove('show');
+                updateProgress();
+            } else {
+                sections.forEach(section => {
+                    section.classList.add('section-hidden');
+                    section.classList.remove('fade-in');
+                });
+                errorMsg.classList.add('show');
+            }
+        }
+
+        // Toggle specify field for radio buttons (single select)
+        function toggleSpecifyField(containerId, show) {
+            const container = document.getElementById(containerId);
+            if (container) {
+                if (show) {
+                    container.classList.add('active');
+                    setTimeout(() => {
+                        const input = container.querySelector('input, textarea');
+                        if (input) input.focus();
+                    }, 300);
+                } else {
+                    container.classList.remove('active');
+                    const input = container.querySelector('input, textarea');
+                    if (input) input.value = '';
+                }
+            }
+        }
+
+        // Toggle specify field for checkboxes (multiple select)
+        function toggleSpecifyCheckbox(checkbox, containerId) {
+            const container = document.getElementById(containerId);
+            if (container) {
+                if (checkbox.checked) {
+                    container.classList.add('active');
+                    setTimeout(() => {
+                        const input = container.querySelector('input, textarea');
+                        if (input) input.focus();
+                    }, 300);
+                } else {
+                    container.classList.remove('active');
+                    const input = container.querySelector('input, textarea');
+                    if (input) input.value = '';
+                }
+            }
+        }
+
+        // Toggle conditional questions based on OER awareness
+        function toggleConditionalQuestions() {
+            const awareness = document.querySelector('input[name="oer_awareness"]:checked');
+            const q8Container = document.getElementById('q8-container');
+            
+            if (awareness && (awareness.value === 'Aware' || awareness.value === 'Very aware')) {
+                q8Container.style.display = 'block';
+            } else {
+                q8Container.style.display = 'none';
+                // Clear Q8 selections when hidden
+                const q8Inputs = q8Container.querySelectorAll('input');
+                q8Inputs.forEach(input => {
+                    if (input.type === 'checkbox' || input.type === 'radio') {
+                        input.checked = false;
+                    } else {
+                        input.value = '';
+                    }
+                });
+            }
+            updateProgress();
+        }
+
+        // Toggle internet-related questions
+        function toggleInternetQuestions(hasInternet) {
+            const internetQuestions = document.querySelectorAll('.conditional-internet');
+            internetQuestions.forEach(q => {
+                q.style.display = hasInternet ? 'block' : 'none';
+                if (!hasInternet) {
+                    // Clear inputs when hidden
+                    const inputs = q.querySelectorAll('input, textarea');
+                    inputs.forEach(input => {
+                        if (input.type === 'checkbox' || input.type === 'radio') {
+                            input.checked = false;
+                        } else {
+                            input.value = '';
+                        }
+                    });
+                }
+            });
+            updateProgress();
+        }
+
+        // Toggle OER usage questions
+        function toggleOERUsage(hasUsed) {
+            const yesQuestions = document.querySelectorAll('.conditional-oer-yes');
+            const noQuestions = document.querySelectorAll('.conditional-oer-no');
+            
+            yesQuestions.forEach(q => {
+                q.style.display = hasUsed ? 'block' : 'none';
+                if (!hasUsed) {
+                    const inputs = q.querySelectorAll('input, textarea');
+                    inputs.forEach(input => {
+                        if (input.type === 'checkbox' || input.type === 'radio') {
+                            input.checked = false;
+                        } else {
+                            input.value = '';
+                        }
+                    });
+                }
+            });
+            
+            noQuestions.forEach(q => {
+                q.style.display = hasUsed ? 'none' : 'block';
+                if (hasUsed) {
+                    const inputs = q.querySelectorAll('input, textarea');
+                    inputs.forEach(input => {
+                        if (input.type === 'checkbox' || input.type === 'radio') {
+                            input.checked = false;
+                        } else {
+                            input.value = '';
+                        }
+                    });
+                }
+            });
+            updateProgress();
+        }
+
+        // Toggle training details
+        function toggleTraining(hasTraining) {
+            const yesDetail = document.getElementById('training-yes-detail');
+            const noDetail = document.getElementById('training-no-detail');
+            
+            if (yesDetail) yesDetail.classList.toggle('hidden', !hasTraining);
+            if (noDetail) noDetail.classList.toggle('hidden', hasTraining);
+            
+            // Clear the other field
+            if (hasTraining) {
+                const noInput = document.querySelector('textarea[name="training_why_not"]');
+                if (noInput) noInput.value = '';
+            } else {
+                const yesInput = document.querySelector('input[name="training_location"]');
+                if (yesInput) yesInput.value = '';
+            }
+            updateProgress();
+        }
+
+        // Update progress bar
+        function updateProgress() {
+            const form = document.getElementById('questionnaire-form');
+
+            // Define all question cards with their question numbers for accurate tracking
+            const questionCards = form.querySelectorAll('.question-card');
+            let totalQuestions = 0;
+            let answeredQuestions = 0;
+
+            questionCards.forEach(card => {
+                // Check visibility using both inline style and computed style
+                const inlineDisplay = card.style.display;
+                const computedDisplay = window.getComputedStyle(card).display;
+                const isHidden = inlineDisplay === 'none' || computedDisplay === 'none';
+
+                if (!isHidden) {
+                    totalQuestions++;
+
+                    // Get all interactive inputs in this card
+                    const inputs = card.querySelectorAll('input:not([type="hidden"]), textarea, select');
+                    let isAnswered = false;
+
+                    // Group inputs by name to handle radio buttons correctly
+                    const nameGroups = {};
+                    inputs.forEach(input => {
+                        if (input.name && input.name !== 'honeypot') {
+                            if (!nameGroups[input.name]) nameGroups[input.name] = [];
+                            nameGroups[input.name].push(input);
+                        }
+                    });
+
+                    for (const name in nameGroups) {
+                        const group = nameGroups[name];
+                        const groupAnswered = group.some(input => {
+                            if (input.type === 'checkbox' || input.type === 'radio') {
+                                return input.checked;
+                            }
+                            return input.value.trim() !== '';
+                        });
+                        if (groupAnswered) {
+                            isAnswered = true;
+                            break;
+                        }
+                    }
+
+                    if (isAnswered) answeredQuestions++;
+                }
+            });
+
+            // Count consent as a question step
+            const consent = document.getElementById('consent-check');
+            if (consent) {
+                totalQuestions++;
+                if (consent.checked) answeredQuestions++;
+            }
+
+            const percentage = totalQuestions > 0 ? Math.round((answeredQuestions / totalQuestions) * 100) : 0;
+            document.getElementById('progress-bar').style.width = percentage + '%';
+            document.getElementById('progress-text').textContent = percentage + '% Complete';
+
+            // Save draft
+            saveDraft();
+        }
+
+function validateForm() {
+            let isValid = true;
+            const requiredCards = document.querySelectorAll('[data-required="true"]');
+            
+            requiredCards.forEach(card => {
+                const inputs = card.querySelectorAll('input, textarea, select');
+                let isFilled = false;
+                
+                inputs.forEach(input => {
+                    if (input.type === 'radio' || input.type === 'checkbox') {
+                        if (input.checked) isFilled = true;
+                    } else if (input.value.trim() !== '') {
+                        isFilled = true;
+                    }
+                });
+                
+                const errorMsg = card.querySelector('.error-message');
+                if (!isFilled) {
+                    isValid = false;
+                    if (errorMsg) errorMsg.classList.add('show');
+                    card.classList.add('error-field');
+                } else {
+                    if (errorMsg) errorMsg.classList.remove('show');
+                    card.classList.remove('error-field');
+                }
+            });
+            
+            return isValid;
+        }
+
+        // Clear error on input
+        function clearError(input) {
+            const card = input.closest('.question-card');
+            if (card) {
+                card.classList.remove('error-field');
+                const errorMsg = card.querySelector('.error-message');
+                if (errorMsg) errorMsg.classList.remove('show');
+            }
+        }
+
+        // Scroll to section
+        function scrollToSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            if (section) {
+                section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        // Save draft to localStorage
+        function saveDraft() {
+            const form = document.getElementById('questionnaire-form');
+            const formData = new FormData(form);
+            const data = {};
+            
+            for (let [key, value] of formData.entries()) {
+                if (data[key]) {
+                    if (!Array.isArray(data[key])) {
+                        data[key] = [data[key]];
+                    }
+                    data[key].push(value);
+                } else {
+                    data[key] = value;
+                }
+            }
+            
+            localStorage.setItem('oer_questionnaire_draft', JSON.stringify(data));
+        }
+
+        // Load draft from localStorage
+        function loadDraft() {
+            const draft = localStorage.getItem('oer_questionnaire_draft');
+            if (!draft) {
+                alert('No draft found to load.');
+                return;
+            }
+            
+            if (!confirm('This will replace your current responses with the saved draft. Continue?')) {
+                return;
+            }
+            
+            const data = JSON.parse(draft);
+            const form = document.getElementById('questionnaire-form');
+            
+            // Set consent checkbox first
+            if (data['consent-check']) {
+                document.getElementById('consent-check').checked = true;
+                checkConsent();
+            }
+            
+            // Populate form fields
+            for (const key in data) {
+                if (key === 'consent-check') continue;
+                
+                const inputs = form.querySelectorAll(`[name="${key}"]`);
+                const value = data[key];
+                
+                if (Array.isArray(value)) {
+                    // Handle multiple checkboxes
+                    inputs.forEach(input => {
+                        if (value.includes(input.value)) {
+                            input.checked = true;
+                            // Trigger change for conditional fields
+                            if (input.type === 'checkbox' && input.getAttribute('onchange')?.includes('toggleSpecifyCheckbox')) {
+                                toggleSpecifyCheckbox(input, input.closest('.question-card').querySelector('.specify-input')?.id);
+                            }
+                        }
+                    });
+                } else {
+                    // Handle single values
+                    inputs.forEach(input => {
+                        if (input.type === 'radio') {
+                            if (input.value === value) {
+                                input.checked = true;
+                                // Trigger conditional updates
+                                if (input.getAttribute('onchange')) {
+                                    input.onchange();
+                                }
+                            }
+                        } else if (input.type === 'checkbox') {
+                            input.checked = input.value === value;
+                        } else {
+                            input.value = value;
+                        }
+                    });
+                }
+            }
+            
+            // Update all conditional displays
+            toggleConditionalQuestions();
+            const internetAccess = document.querySelector('input[name="internet_access"]:checked');
+            if (internetAccess) toggleInternetQuestions(internetAccess.value === 'Yes');
+            
+            const usedOER = document.querySelector('input[name="used_oer"]:checked');
+            if (usedOER) toggleOERUsage(usedOER.value === 'Yes');
+            
+            updateProgress();
+            alert('Draft loaded successfully!');
+        }
+
+        // Export draft as JSON file
+        function exportDraft() {
+            const draft = localStorage.getItem('oer_questionnaire_draft');
+            if (!draft) {
+                alert('No draft to export. Please fill in some responses first.');
+                return;
+            }
+            
+            const data = JSON.parse(draft);
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'oer_questionnaire_draft_' + new Date().toISOString().split('T')[0] + '.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Export final response
+        function exportResponse() {
+            const refId = document.getElementById('ref-id').textContent;
+            const response = localStorage.getItem('oer_final_response_' + refId);
+            if (!response) {
+                alert('No response data found.');
+                return;
+            }
+            
+            const data = JSON.parse(response);
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'oer_response_' + refId + '.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Collect all form data
+        function collectFormData() {
+            const form = document.getElementById('questionnaire-form');
+            const formData = new FormData(form);
+            const data = {};
+            
+            for (let [key, value] of formData.entries()) {
+                if (data[key]) {
+                    if (!Array.isArray(data[key])) {
+                        data[key] = [data[key]];
+                    }
+                    data[key].push(value);
+                } else {
+                    data[key] = value;
+                }
+            }
+            
+            // Add metadata
+            data.submission_id = document.getElementById('submission-id').value;
+            data.submission_timestamp = document.getElementById('submission-timestamp').value;
+            
+            return data;
+        }
+
+        // Auto-save draft every 30 seconds
+        setInterval(saveDraft, 30000);
+    </script>
+</body>
+</html>
