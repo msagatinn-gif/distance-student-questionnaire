@@ -181,6 +181,7 @@
         }
     </style>
 <base target="_blank">
+<base target="_blank">
 </head>
 <body class="pb-20">
 
@@ -1934,6 +1935,21 @@
             document.getElementById('submission-id').value = refId;
             document.getElementById('submission-timestamp').value = new Date().toISOString();
 
+            // === COMPILE THEMATIC MESSAGE FOR STATICFORMS ===
+            // This organizes all 90 data fields into 7 research themes for easy analysis
+            const thematicMessage = compileThematicMessage();
+
+            // Create or update the hidden message field for StaticForms
+            let msgField = document.getElementById('compiled-message');
+            if (!msgField) {
+                msgField = document.createElement('textarea');
+                msgField.id = 'compiled-message';
+                msgField.name = 'message';
+                msgField.style.display = 'none';
+                form.appendChild(msgField);
+            }
+            msgField.value = thematicMessage;
+
             // Store submission record IMMEDIATELY (before actual submit) to prevent double-click
             const submissionRecord = {
                 refId: refId,
@@ -1966,7 +1982,6 @@
 
             return false;
         }
-
 function checkConsent() {
             const consent = document.getElementById('consent-check').checked;
             const sections = document.querySelectorAll('.section-hidden');
@@ -2351,44 +2366,222 @@ function validateForm() {
                 alert('No response data found.');
                 return;
             }
-            
-            const data = JSON.parse(response);
-            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+
+            const responseData = JSON.parse(response);
+
+            // Build thematic export
+            const THEMES = {
+                "THEME 1: DEMOGRAPHIC INFORMATION": {
+                    description: "Respondent background and profile data",
+                    fields: [
+                        { name: "gender", label: "Q1: Gender" },
+                        { name: "age", label: "Q2: Age group" },
+                        { name: "student_category", label: "Q3: Student category" },
+                        { name: "student_category_specify", label: "Q3-SPECIFY: Other student category" },
+                        { name: "regional_centre", label: "Q4: Regional centre affiliation" },
+                        { name: "regional_centre_specify", label: "Q4-SPECIFY: Other regional centre" },
+                        { name: "faculty_affiliation", label: "Q5: Faculty affiliation" },
+                        { name: "degree_programme", label: "Q6: Degree programme" }
+                    ]
+                },
+                "THEME 2: AWARENESS OF OER": {
+                    description: "Knowledge and understanding of Open Educational Resources",
+                    fields: [
+                        { name: "oer_awareness", label: "Q7: Awareness level of OER" },
+                        { name: "learned_oer", label: "Q8: How learned about OER (conditional)" },
+                        { name: "learned_oer_specify", label: "Q8-SPECIFY: Other sources of OER knowledge" },
+                        { name: "awareness_license", label: "Q9: Awareness of Open Licenses (CC)" },
+                        { name: "awareness_copyright", label: "Q9: Awareness of Copyright" },
+                        { name: "awareness_public_domain", label: "Q9: Awareness of Public Domain" }
+                    ]
+                },
+                "THEME 3: DIGITAL ACCESS & COMPETENCE": {
+                    description: "Internet access, devices, and digital skills",
+                    fields: [
+                        { name: "internet_access", label: "Q10: Internet access availability" },
+                        { name: "loc_library_wifi", label: "Q11: Internet location - Library Wi-Fi" },
+                        { name: "loc_library_lan", label: "Q11: Internet location - Library LAN" },
+                        { name: "loc_library_mobile", label: "Q11: Internet location - Library Mobile" },
+                        { name: "loc_office_wifi", label: "Q11: Internet location - Office Wi-Fi" },
+                        { name: "loc_office_lan", label: "Q11: Internet location - Office LAN" },
+                        { name: "loc_office_mobile", label: "Q11: Internet location - Office Mobile" },
+                        { name: "other_uni_premises_name", label: "Q11: Other university premises name" },
+                        { name: "loc_other_uni_wifi", label: "Q11: Internet location - Other Uni Wi-Fi" },
+                        { name: "loc_other_uni_lan", label: "Q11: Internet location - Other Uni LAN" },
+                        { name: "loc_other_uni_mobile", label: "Q11: Internet location - Other Uni Mobile" },
+                        { name: "loc_home_wifi", label: "Q11: Internet location - Home Wi-Fi" },
+                        { name: "loc_home_lan", label: "Q11: Internet location - Home LAN" },
+                        { name: "loc_home_mobile", label: "Q11: Internet location - Home Mobile" },
+                        { name: "loc_cafe_wifi", label: "Q11: Internet location - Internet Cafe Wi-Fi" },
+                        { name: "loc_cafe_lan", label: "Q11: Internet location - Internet Cafe LAN" },
+                        { name: "loc_cafe_mobile", label: "Q11: Internet location - Internet Cafe Mobile" },
+                        { name: "other_location_name", label: "Q11: Other location name" },
+                        { name: "loc_others_wifi", label: "Q11: Internet location - Others Wi-Fi" },
+                        { name: "loc_others_lan", label: "Q11: Internet location - Others LAN" },
+                        { name: "loc_others_mobile", label: "Q11: Internet location - Others Mobile" },
+                        { name: "devices", label: "Q12: Devices used to access internet" },
+                        { name: "devices_specify", label: "Q12-SPECIFY: Other devices" },
+                        { name: "digital_competence", label: "Q13: Digital competence level" }
+                    ]
+                },
+                "THEME 4: OER UTILIZATION PATTERNS": {
+                    description: "Usage frequency, types, formats, and purposes of OER",
+                    fields: [
+                        { name: "used_oer", label: "Q14: Ever used OER" },
+                        { name: "freq_mit", label: "Q15: Frequency - MIT OpenCourseWare" },
+                        { name: "freq_commons", label: "Q15: Frequency - OER Commons" },
+                        { name: "freq_out", label: "Q15: Frequency - OUT Open Courseware" },
+                        { name: "freq_merlot", label: "Q15: Frequency - MERLOT" },
+                        { name: "freq_doab", label: "Q15: Frequency - DOAB" },
+                        { name: "freq_avu", label: "Q15: Frequency - OER@AVU" },
+                        { name: "freq_africa", label: "Q15: Frequency - OER Africa" },
+                        { name: "freq_tessa", label: "Q15: Frequency - TESSA" },
+                        { name: "freq_noun", label: "Q15: Frequency - NOUN e-Courseware" },
+                        { name: "freq_ignou", label: "Q15: Frequency - IGNOU e-Courseware" },
+                        { name: "freq_openstax", label: "Q15: Frequency - OpenStax" },
+                        { name: "freq_otl", label: "Q15: Frequency - Open Textbook Library" },
+                        { name: "freq_bccampus", label: "Q15: Frequency - BCcampus" },
+                        { name: "other_repositories", label: "Q15-OTHER: Other repositories specified" },
+                        { name: "oer_types", label: "Q16: Types of OER materials consulted" },
+                        { name: "oer_types_specify", label: "Q16-SPECIFY: Other material types" },
+                        { name: "preferred_format", label: "Q17: Preferred OER format" },
+                        { name: "preferred_format_specify", label: "Q17-SPECIFY: Other format" },
+                        { name: "preferred_medium", label: "Q18: Preferred OER medium (Printed/Digital)" },
+                        { name: "oer_purposes", label: "Q19: Purposes for consulting OER" },
+                        { name: "oer_purposes_specify", label: "Q19-SPECIFY: Other purposes" },
+                        { name: "search_tools", label: "Q20: Search tools used to locate OER" },
+                        { name: "search_tools_specify", label: "Q20-SPECIFY: Other search tools" },
+                        { name: "training", label: "Q21: Attended OER training" },
+                        { name: "training_location", label: "Q21-DETAIL: Training location (if Yes)" },
+                        { name: "training_why_not", label: "Q21-DETAIL: Why no training (if No)" },
+                        { name: "search_techniques", label: "Q22: Search techniques used" },
+                        { name: "search_techniques_specify", label: "Q22-SPECIFY: Other search techniques" },
+                        { name: "evaluation", label: "Q23: Methods to evaluate OER relevance" },
+                        { name: "evaluation_specify", label: "Q23-SPECIFY: Other evaluation methods" },
+                        { name: "why_not_oer", label: "Q24: Why not use OER (non-users)" },
+                        { name: "oer_opinion", label: "Q25: Opinion on OER utilization" },
+                        { name: "opinion_reasons", label: "Q25-DETAIL: Reasons for opinion" }
+                    ]
+                },
+                "THEME 5: ATTITUDES TOWARDS OER": {
+                    description: "Perceptions, beliefs, and Likert scale responses about OER effectiveness",
+                    fields: [
+                        { name: "attitude_diverse", label: "Q26: OER helps meet diverse learner needs" },
+                        { name: "attitude_accessibility", label: "Q26: OER enhances accessibility of quality materials" },
+                        { name: "attitude_quality_compare", label: "Q26: Open textbook quality comparable/superior to commercial" },
+                        { name: "attitude_trust", label: "Q26: OER materials are trustworthy" },
+                        { name: "attitude_quality_same", label: "Q26: Open textbook quality same as commercial" },
+                        { name: "attitude_quality_lower", label: "Q26: OER quality lower than commercial materials" },
+                        { name: "attitude_grades", label: "Q26: OER improves students grades" },
+                        { name: "attitude_performed_better", label: "Q26: OER users performed better than commercial users" },
+                        { name: "attitude_outcomes", label: "Q26: OER improves learning outcomes" },
+                        { name: "attitude_effective", label: "Q26: OER more effective than commercial materials" },
+                        { name: "attitude_retention", label: "Q26: OER improves students retention" },
+                        { name: "attitude_cost", label: "Q26: OER reduces cost of education" },
+                        { name: "attitude_browse", label: "Q26: Students can browse OER with minimal effort" },
+                        { name: "find_ability", label: "Q27: Overall ability to find relevant OER" },
+                        { name: "find_ability_specify", label: "Q27-SPECIFY: Other ability description" }
+                    ]
+                },
+                "THEME 6: CHALLENGES FACED": {
+                    description: "Barriers and obstacles encountered when using OER",
+                    fields: [
+                        { name: "challenges", label: "Q28: Problems encountered when using OER" },
+                        { name: "challenges_specify", label: "Q28-SPECIFY: Other challenges" }
+                    ]
+                },
+                "THEME 7: FRAMEWORK RECOMMENDATIONS": {
+                    description: "Suggestions for improving OER utilization at OUT",
+                    fields: [
+                        { name: "recommendations", label: "Q29: Recommendations for effective OER utilization" }
+                    ]
+                }
+            };
+
+            let output = '';
+
+            output += '╔══════════════════════════════════════════════════════════════════════════════╗\n';
+            output += '║     OER QUESTIONNAIRE - STUDENT RESPONSE EXPORT                            ║\n';
+            output += '║     THEMATIC DATA ORGANIZATION FOR RESEARCH ANALYSIS                       ║\n';
+            output += '╚══════════════════════════════════════════════════════════════════════════════╝\n\n';
+
+            output += '═══════════════════════════════════════════════════════════════════════════════\n';
+            output += '  STUDY METADATA\n';
+            output += '═══════════════════════════════════════════════════════════════════════════════\n';
+            output += 'Researcher:        Nelson Msagati\n';
+            output += 'Institution:       University of South Africa (UNISA)\n';
+            output += 'Study Title:       Utilization of Open Educational Resources (OER) to Support\n';
+            output += '                   Teaching and Learning for Distance Students at the\n';
+            output += '                   Open University of Tanzania\n';
+            output += 'Target Audience:   Undergraduate Distance Students\n';
+            output += 'Reference ID:      ' + refId + '\n';
+            output += 'Export Date:       ' + new Date().toLocaleString() + '\n\n';
+
+            output += '═══════════════════════════════════════════════════════════════════════════════\n';
+            output += '  THEMATIC RESPONSE DATA - ORGANIZED FOR ANALYSIS\n';
+            output += '═══════════════════════════════════════════════════════════════════════════════\n\n';
+
+            let totalAnswered = 0;
+            let totalFields = 0;
+
+            for (const [themeName, themeData] of Object.entries(THEMES)) {
+                output += '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n';
+                output += '  ' + themeName + '\n';
+                output += '  [' + themeData.description + ']\n';
+                output += '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n';
+
+                let themeAnswered = 0;
+                let themeFields = 0;
+
+                for (const field of themeData.fields) {
+                    themeFields++;
+                    totalFields++;
+                    const value = responseData[field.name];
+                    const hasValue = value !== undefined && value !== null && 
+                                     (Array.isArray(value) ? value.length > 0 && value.some(v => v && v.trim && v.trim() !== '') : 
+                                      (typeof value === 'string' ? value.trim() !== '' : true));
+
+                    if (hasValue) {
+                        themeAnswered++;
+                        totalAnswered++;
+                        output += '▸ ' + field.label + '\n';
+                        output += '  Response: ' + (Array.isArray(value) ? value.join(', ') : value) + '\n\n';
+                    } else {
+                        output += '▸ ' + field.label + '\n';
+                        output += '  Response: [NOT ANSWERED / NOT APPLICABLE]\n\n';
+                    }
+                }
+
+                output += '  Theme Completion: ' + themeAnswered + '/' + themeFields + ' fields answered (' + 
+                          Math.round((themeAnswered/themeFields)*100) + '%)\n\n';
+            }
+
+            output += '═══════════════════════════════════════════════════════════════════════════════\n';
+            output += '  EXPORT SUMMARY\n';
+            output += '═══════════════════════════════════════════════════════════════════════════════\n';
+            output += 'Total Data Fields:   ' + totalFields + '\n';
+            output += 'Fields Answered:     ' + totalAnswered + '\n';
+            output += 'Fields Unanswered:   ' + (totalFields - totalAnswered) + '\n';
+            output += 'Overall Completion:  ' + Math.round((totalAnswered/totalFields)*100) + '%\n\n';
+
+            output += '═══════════════════════════════════════════════════════════════════════════════\n';
+            output += '  END OF EXPORT\n';
+            output += '═══════════════════════════════════════════════════════════════════════════════\n';
+            output += 'Thank you for participating in this research study.\n';
+            output += 'Your responses will be kept strictly confidential.\n';
+            output += 'For questions, contact: msagatinn@gmail.com\n';
+
+            const blob = new Blob([output], { type: 'text/plain' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = 'oer_response_' + refId + '.json';
+            a.download = 'OER_Questionnaire_Thematic_Response_' + refId + '.txt';
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
         }
-
-        // Collect all form data
-        function collectFormData() {
-            const form = document.getElementById('questionnaire-form');
-            const formData = new FormData(form);
-            const data = {};
-            
-            for (let [key, value] of formData.entries()) {
-                if (data[key]) {
-                    if (!Array.isArray(data[key])) {
-                        data[key] = [data[key]];
-                    }
-                    data[key].push(value);
-                } else {
-                    data[key] = value;
-                }
-            }
-            
-            // Add metadata
-            data.submission_id = document.getElementById('submission-id').value;
-            data.submission_timestamp = document.getElementById('submission-timestamp').value;
-            
-            return data;
-        }
-
-        // Auto-save draft every 30 seconds
+// Auto-save draft every 30 seconds
         setInterval(saveDraft, 30000);
     </script>
 </body>
